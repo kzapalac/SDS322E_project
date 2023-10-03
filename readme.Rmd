@@ -47,6 +47,14 @@ Overall, there are:
 
 ### In-Group vs. Out-Group Perspective Taking, Empathetic Concern, and Altruism
 
+```{r}
+
+```
+
 ### Influence of Priming on Out-Group Perspective Taking, Empathetic Concern, and Altruism
+
+```{r}
+
+```
 
 # References

@@ -1,0 +1,108 @@
+---
+title: "Data Cleaning"
+author: "Kennedy Zapalac"
+date: "2023-10-03"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+# install.packages("janitor")
+library(janitor) # used to clean the column names
+```
+
+
+```{r load data, include=FALSE}
+df <- read.csv('LP_Dictator.csv', na.strings=c("", " "))
+```
+After cleaning the data, here is what it looks like:
+```{r clean data, echo=FALSE}
+# could keep the page submit buttons to see how long someone thought about something
+df <- df %>% 
+  clean_names() %>% 
+  select(-(v2:v7), -q1, -(q45_1:q2), -(disc_time_1:disc_time_4), -(learn_time_1:learn_time_4), -(perf_time_1:perf_time_4), -(q18_1:q18_4), -(q21_1:q21_4), -(note_time_1:note_time_4),
+         -(dg_time_1:dg_time_4), -(q31_1:q31_4), -(q34_1:q34_4), -q24, -q46) %>% # remove metadata columns
+  rename('startDate'='v8', 'endDate'='v9', 'finished'='v10', 'consent'='q44', 'includeOrExclude' = 'q50') %>% 
+  filter(consent == 1) %>%  # remove people who decided not to participate , also removes the extra header
+  mutate(gender = case_when(gender == "1" ~ "male", gender == 2 ~ "female")) %>% # explicitly code gender 
+  mutate(priming_received = case_when(q10 == "1" ~ "learning", q13 == "1" ~ "performance")) %>% # create column indicating priming received
+  select(-q10, -q13) %>% # remove separate columns that used to indicate which priming was received
+  mutate(inOrOut = case_when(q17 == "1" ~ "in", q20 == "1" ~ "out", q38 == "1" ~ "in", q41 == "1" ~ "out")) %>% # indicate in or out-group condition
+  select(-(q16:q42_4)) %>%  # remove the separate columns used to indicate in or out-group
+  mutate_at(c("pt_1", "pt_2", "pt_3", "pt_4", "pt_5"), as.numeric) %>% # convert to numeric to calculate the mean
+  mutate(includeOrExclude = case_when(includeOrExclude == "1" ~ "exclude", includeOrExclude == "2" ~ "include"))
+
+# check the unique values in each column
+# calculate the mean response for PT and LP
+# mutate(PT_avg = rowMeans(select(., starts_with("pt"))))
+
+# preview the cleaned dataset
+glimpse(df)
+
+# save the cleaned dataset
+write.csv(df, 'LP_dictator_cleaned.csv', row.names=F)
+```
+We still need to convert some of these variables to numeric, and we also need to compute the average responses for the perspective taking scale (`pt_1` - `pt_5`) and the trait-level learning and performance scale (`lp_scale_1_1` - `lp_scale_2_8`). Some of items will need to be reverse coded before an average can be computed.
+
+We also need to decide how we would like to treat the 89 people who didn't answer the attention check and the 2 people who said to exclude their responses. There may be some incomplete surveys which we will have to decide how we want to handle that.
+
+## Conditions
+Here is a summary of our sample and how many people we had per condition
+```{r conditions, echo=FALSE}
+# table of gender by priming received
+table(df$gender, df$priming_received)
+```
+
+**Prompt received for learning priming:**
+
+Please think of a time when you met someone new in a social situation. This should be a time when you aimed to understand that person's values, attitudes or background. Please describe the situation in about 1-2 paragraphs. Also, please explain how attempting to learn about a stranger helped you extend your mastery of social situations.
+
+**Prompt received for performance priming:**
+
+Please think of a time when you met someone new in a social situation. This should be a time when you wanted to be judged favorably by that person. Please describe the situation in about 1-2 paragraphs. Also, please explain how conveying that you are likeable to a stranger helped you perform well in the social interaction.
+
+**In-group stranger paragraphs:**
+- If female: Who am I generally? I'm a 21 year old White woman, curly hair, athletic. I'm a student. I'd like to think I'm pretty nice and hardworking. I don't really know what else I'm supposed to say...I’m supposed to write about something interesting that’s happened to me lately. Well, I don’t know if this is interesting, but the only thing that I can seem to think of is that two days ago my boyfriend and I broke up. We’ve been dating since our junior year in high school and have been really close. It’s been great being at college together. I thought he felt the same way, but I guess that things have changed. Now he wants to date other people. He says that he still cares a lot about me, but he doesn’t want to be tied down to just one person. I’ve been kind of upset. It’s all I think about. My friends all tell me that I’ll meet other guys and all I need is for something good to happen to cheer me up. I guess they’re right, but so far that hasn’t happened.
+- If male: Who am I generally? I'm a 21 year old White man, curly hair, athletic. I'm a student. I'd like to think I'm pretty nice and hardworking. I don't really know what else I'm supposed to say...I’m supposed to write about something interesting that’s happened to me lately. Well, I don’t know if this is interesting, but the only thing that I can seem to think of is that two days ago my girlfriend and I broke up. We’ve been dating since our junior year in high school and have been really close. It’s been great being at college together. I thought she felt the same way, but I guess that things have changed. Now she wants to date other people. She says that she still cares a lot about me, but she doesn’t want to be tied down to just one person. I’ve been kind of upset. It’s all I think about. My friends all tell me that I’ll meet other girls and all I need is for something good to happen to cheer me up. I guess they’re right, but so far that hasn’t happened.
+
+**Out-group stranger paragraphs:**
+- If female: Who am I generally? I'm a 21 year old Black woman, curly hair, athletic. I'm a student. I'd like to think I'm pretty nice and hardworking. I don't really know what else I'm supposed to say...I’m supposed to write about something interesting that’s happened to me lately. Well, I don’t know if this is interesting, but the only thing that I can seem to think of is that two days ago my boyfriend and I broke up. We’ve been dating since our junior year in high school and have been really close. It’s been great being at college together. I thought he felt the same way, but I guess that things have changed. Now he wants to date other people. He says that he still cares a lot about me, but he doesn’t want to be tied down to just one person. I’ve been kind of upset. It’s all I think about. My friends all tell me that I’ll meet other guys and all I need is for something good to happen to cheer me up. I guess they’re right, but so far that hasn’t happened.
+- If male: Who am I generally? I'm a 21 year old Black man, curly hair, athletic. I'm a student. I'd like to think I'm pretty nice and hardworking. I don't really know what else I'm supposed to say...I’m supposed to write about something interesting that’s happened to me lately. Well, I don’t know if this is interesting, but the only thing that I can seem to think of is that two days ago my girlfriend and I broke up. We’ve been dating since our junior year in high school and have been really close. It’s been great being at college together. I thought she felt the same way, but I guess that things have changed. Now she wants to date other people. She says that she still cares a lot about me, but she doesn’t want to be tied down to just one person. I’ve been kind of upset. It’s all I think about. My friends all tell me that I’ll meet other girls and all I need is for something good to happen to cheer me up. I guess they’re right, but so far that hasn’t happened.
+
+## Quality checks
+### attention check:
+To ensure that people were paying attention, they were asked to describe what they had read. Some people did not answer that question, so they may not have been paying attention
+```{r attention check, echo=FALSE}
+print('How many people passed the attention check?')
+table(!is.na(df$att_check))
+```
+### include or exclude:
+**Participants read this:** The study is very important to us and a considerable amount of time and effort has gone into creating this survey. As such, if for whatever reason you feel that you did not complete the survey carefully or accurately, it would be extremely helpful if you could let us know this
+now. Your response will in no way affect your compensation or reputation on Mturk.
+
+**And then responded with:**
+
+- I  DID NOT complete the survey carefully or accurately. Please exclude my responses from analysis.
+- I DID complete the survey carefully or accurately. Please include my responses from analysis.
+```{r exclude responses, echo=FALSE}
+print('How many people said to include or exclude their responses?')
+table(df$includeOrExclude)
+```
+
+## Textual analysis
+**Columns that we could perform textual analysis on and their prompts:**
+
+- `self_disc`: Now we would like to get to know a little bit more about you. Please write one paragraph about who you are generally (keep it anonymous), and please describe something interesting that has happened in your life recently. This paragraph will randomly be shown to future Mturk participants to read.
+- `note`: Now you have the opportunity to write a note to the participant you just read about. Please respond with your thoughts and feelings to his/her "interesting thing that has happened". Your message will be emailed to this participant (and he/she will not receive any other information about you).Please write a 1-2 paragraph response below:
+
+## Other columns
+Should provide extra detail about the other variables we can use for analysis here
+
+Having it all in one place might help us to perform and interpret our analysis.
+
+Ex:
+
+- `pt_1`: I sometimes found it difficult to see things from the other participant's point of view.
+  - Answers: 1 (does not describe me at all) to 7 (describes me extremely well)
+
