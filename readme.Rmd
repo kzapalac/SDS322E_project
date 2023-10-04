@@ -44,12 +44,34 @@ Overall, there are:
 -   2 potential covariates: trait level learning/performance orientation, gender
 
 # Exploratory Data Analysis
+```{r load data}
+library(tidyverse)
+df <- read.csv("LP_Dictator_cleaned.csv")
+df <- df %>% filter(startDate != "5/22/13 10:06")
 
-### In-Group vs. Out-Group Perspective Taking, Empathetic Concern, and Altruism
+# remove text from dg column
 
-```{r}
+
+# might want to remove attention check and excluded responses
 
 ```
+
+### In-Group vs. Out-Group Perspective Taking, Empathetic Concern, and Altruism
+```{r}
+# empathy
+df %>% filter(!is.na(inOrOut)) %>% ggplot(aes(y=emp, x = inOrOut)) + geom_violin()
+df %>% filter(!is.na(inOrOut)) %>% ggplot(aes(y=emp, x = inOrOut)) + geom_boxplot()
+df %>% filter(!is.na(inOrOut)) %>% ggplot(aes(y=emp, x = inOrOut)) + geom_bar(stat='summary') +
+  geom_errorbar(stat='summary', width = 0.3)
+
+# altruism (dictator game) 
+df %>% filter(!is.na(inOrOut)) %>% ggplot(aes(y=emp, x = inOrOut)) + geom_violin()
+df %>% filter(!is.na(inOrOut)) %>% ggplot(aes(y=emp, x = inOrOut)) + geom_boxplot()
+df %>% filter(!is.na(inOrOut)) %>% ggplot(aes(y=emp, x = inOrOut)) + geom_bar(stat='summary') +
+  geom_errorbar(stat='summary', width = 0.3)
+```
+
+
 
 ### Influence of Priming on Out-Group Perspective Taking, Empathetic Concern, and Altruism
 

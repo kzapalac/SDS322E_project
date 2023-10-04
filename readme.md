@@ -86,7 +86,96 @@ Overall, there are:
 
 # Exploratory Data Analysis
 
+``` r
+library(tidyverse)
+```
+
+    ## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+    ## ✔ dplyr     1.1.2     ✔ readr     2.1.4
+    ## ✔ forcats   1.0.0     ✔ stringr   1.5.0
+    ## ✔ ggplot2   3.4.3     ✔ tibble    3.2.1
+    ## ✔ lubridate 1.9.2     ✔ tidyr     1.3.0
+    ## ✔ purrr     1.0.2     
+    ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+    ## ✖ dplyr::filter() masks stats::filter()
+    ## ✖ dplyr::lag()    masks stats::lag()
+    ## ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+
+``` r
+df <- read.csv("LP_Dictator_cleaned.csv")
+df <- df %>% filter(startDate != "5/22/13 10:06")
+
+# remove text from dg column
+
+
+# might want to remove attention check and excluded responses
+```
+
 ### In-Group vs. Out-Group Perspective Taking, Empathetic Concern, and Altruism
+
+``` r
+# empathy
+df %>% filter(!is.na(inOrOut)) %>% ggplot(aes(y=emp, x = inOrOut)) + geom_violin()
+```
+
+    ## Warning: Removed 3 rows containing non-finite values (`stat_ydensity()`).
+
+![](readme_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
+
+``` r
+df %>% filter(!is.na(inOrOut)) %>% ggplot(aes(y=emp, x = inOrOut)) + geom_boxplot()
+```
+
+    ## Warning: Removed 3 rows containing non-finite values (`stat_boxplot()`).
+
+![](readme_files/figure-gfm/unnamed-chunk-1-2.png)<!-- -->
+
+``` r
+df %>% filter(!is.na(inOrOut)) %>% ggplot(aes(y=emp, x = inOrOut)) + geom_bar(stat='summary') +
+  geom_errorbar(stat='summary', width = 0.3)
+```
+
+    ## Warning: Removed 3 rows containing non-finite values (`stat_summary()`).
+
+    ## No summary function supplied, defaulting to `mean_se()`
+
+    ## Warning: Removed 3 rows containing non-finite values (`stat_summary()`).
+
+    ## No summary function supplied, defaulting to `mean_se()`
+
+![](readme_files/figure-gfm/unnamed-chunk-1-3.png)<!-- -->
+
+``` r
+# altruism (dictator game) 
+df %>% filter(!is.na(inOrOut)) %>% ggplot(aes(y=emp, x = inOrOut)) + geom_violin()
+```
+
+    ## Warning: Removed 3 rows containing non-finite values (`stat_ydensity()`).
+
+![](readme_files/figure-gfm/unnamed-chunk-1-4.png)<!-- -->
+
+``` r
+df %>% filter(!is.na(inOrOut)) %>% ggplot(aes(y=emp, x = inOrOut)) + geom_boxplot()
+```
+
+    ## Warning: Removed 3 rows containing non-finite values (`stat_boxplot()`).
+
+![](readme_files/figure-gfm/unnamed-chunk-1-5.png)<!-- -->
+
+``` r
+df %>% filter(!is.na(inOrOut)) %>% ggplot(aes(y=emp, x = inOrOut)) + geom_bar(stat='summary') +
+  geom_errorbar(stat='summary', width = 0.3)
+```
+
+    ## Warning: Removed 3 rows containing non-finite values (`stat_summary()`).
+
+    ## No summary function supplied, defaulting to `mean_se()`
+
+    ## Warning: Removed 3 rows containing non-finite values (`stat_summary()`).
+
+    ## No summary function supplied, defaulting to `mean_se()`
+
+![](readme_files/figure-gfm/unnamed-chunk-1-6.png)<!-- -->
 
 ### Influence of Priming on Out-Group Perspective Taking, Empathetic Concern, and Altruism
 
