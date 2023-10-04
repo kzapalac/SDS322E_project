@@ -105,4 +105,12 @@ Ex:
 
 - `pt_1`: I sometimes found it difficult to see things from the other participant's point of view.
   - Answers: 1 (does not describe me at all) to 7 (describes me extremely well)
+- `pt_2`: 
+  
+
+## Preliminary visualizations
+```{r}
+
+```
+
 

@@ -58,25 +58,69 @@ df <- df %>% filter(startDate != "5/22/13 10:06")
 
 ### In-Group vs. Out-Group Perspective Taking, Empathetic Concern, and Altruism
 ```{r}
-# empathy
+# Christiana
+# graphs for empathy
 df %>% filter(!is.na(inOrOut)) %>% ggplot(aes(y=emp, x = inOrOut)) + geom_violin()
 df %>% filter(!is.na(inOrOut)) %>% ggplot(aes(y=emp, x = inOrOut)) + geom_boxplot()
 df %>% filter(!is.na(inOrOut)) %>% ggplot(aes(y=emp, x = inOrOut)) + geom_bar(stat='summary') +
   geom_errorbar(stat='summary', width = 0.3)
 
-# altruism (dictator game) 
-df %>% filter(!is.na(inOrOut)) %>% ggplot(aes(y=emp, x = inOrOut)) + geom_violin()
-df %>% filter(!is.na(inOrOut)) %>% ggplot(aes(y=emp, x = inOrOut)) + geom_boxplot()
-df %>% filter(!is.na(inOrOut)) %>% ggplot(aes(y=emp, x = inOrOut)) + geom_bar(stat='summary') +
-  geom_errorbar(stat='summary', width = 0.3)
+# create summary table with mean, sd, se, and cis
+df %>% filter(!is.na(inOrOut)) %>% group_by(inOrOut) %>% summarize(n = n(), mean = mean(emp, na.rm=T), sd = sd(emp, na.rm=T), se = sd/sqrt(n), lower_ci = mean - 1.96*se, upper_ci = mean + 1.96*se)
+
+# test with removing attention check
+df %>% filter(!is.na(inOrOut), !is.na(att_check)) 
 ```
+Description of graph:
+Hypothesis based on graph:
 
+```{r}
+# Kaylee
+# remove extra text, just have numbers
+df$dg <- as.numeric(gsub("\\D", "", df$dg))
+# graphs for altruism (dictator game) 
+df %>% filter(!is.na(inOrOut)) %>% ggplot(aes(y=emp, x = inOrOut)) + geom_violin()
+df %>% filter(!is.na(inOrOut)) %>% ggplot(aes(y=emp, x = inOrOut)) + geom_boxplot()
+df %>% filter(!is.na(inOrOut)) %>% ggplot(aes(y=emp, x = inOrOut)) + geom_bar(stat='summary') +
+  geom_errorbar(stat='summary', width = 0.3)
+
+```
+Description of graph:
+Hypothesis based on graph:
+
+```{r}
+# Kennedy
+# graphs for perspective taking
+# create composite variable (avg of 5 questions)
+# make sure to reverse code questions so that a 7 represents better perspective taking
+# df %>% mutate(pt_1_reversed = case_when(pt_1 == "7" ~ 1, pt_1 == "6" ~ 2))
+# select the correct pt questions (reversed or normal)
+# df %>% mutate(PT_avg = rowMeans(select(., c("pt_1_reversed", "pt_2", "", "", ""))), na.rm=T)
+```
+Description of graph:
+Hypothesis based on graph:
 
 
 ### Influence of Priming on Out-Group Perspective Taking, Empathetic Concern, and Altruism
 
 ```{r}
+# empathy
+df %>% filter(!is.na(inOrOut)) %>% ggplot(aes(y=emp, x = inOrOut)) + geom_violin() + facet_wrap(~priming_received)
+```
+Description of graph:
+Hypothesis based on graph:
+
+```{r}
+# altruism
 
 ```
+Description of graph:
+Hypothesis based on graph:
 
+```{r}
+# perspective taking
+
+```
+Description of graph:
+Hypothesis based on graph:
 # References
