@@ -7,7 +7,7 @@ bibliography: references.bib
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 ```
 
 # Project Overview
@@ -44,83 +44,163 @@ Overall, there are:
 -   2 potential covariates: trait level learning/performance orientation, gender
 
 # Exploratory Data Analysis
-```{r load data}
+```{r load data, include=FALSE}
 library(tidyverse)
-df <- read.csv("LP_Dictator_cleaned.csv")
-df <- df %>% filter(startDate != "5/22/13 10:06")
-
-# remove text from dg column
-
-
-# might want to remove attention check and excluded responses
-
+df <- read.csv("LP_dictator_cleaned.csv")
+df <- df %>% filter(startDate != "5/22/13 10:06") # remove bad response
 ```
 
-### In-Group vs. Out-Group Perspective Taking, Empathetic Concern, and Altruism
-```{r}
+### In-Group vs. Out-Group Empathetic Concern, Altruism, and Perspective Taking
+```{r empathetic concern, echo=FALSE}
 # Christiana
 # graphs for empathy
-df %>% filter(!is.na(inOrOut)) %>% ggplot(aes(y=emp, x = inOrOut)) + geom_violin()
-df %>% filter(!is.na(inOrOut)) %>% ggplot(aes(y=emp, x = inOrOut)) + geom_boxplot()
-df %>% filter(!is.na(inOrOut)) %>% ggplot(aes(y=emp, x = inOrOut)) + geom_bar(stat='summary') +
-  geom_errorbar(stat='summary', width = 0.3)
+# df %>% filter(!is.na(inOrOut), !is.na(emp)) %>% ggplot(aes(y=emp, x = inOrOut)) + geom_violin() + ggtitle("Empathy for In-Group Vs. Out-Group Stranger") +
+#   xlab("group") + ylab('empathy')
+df %>% filter(!is.na(inOrOut), !is.na(emp)) %>% ggplot(aes(y=emp, x = inOrOut)) + geom_boxplot() + ggtitle("Empathy for In-Group Vs. Out-Group Stranger") +
+  xlab("group") + ylab('empathy')
+df %>% filter(!is.na(inOrOut), !is.na(emp)) %>% ggplot(aes(y=emp, x = inOrOut)) + geom_bar(stat='summary') +
+  geom_errorbar(stat='summary', width = 0.3) + ggtitle("Average Empathy for In-Group Vs. Out-Group Strangers") + xlab("group") + ylab("average empathy")
 
 # create summary table with mean, sd, se, and cis
-df %>% filter(!is.na(inOrOut)) %>% group_by(inOrOut) %>% summarize(n = n(), mean = mean(emp, na.rm=T), sd = sd(emp, na.rm=T), se = sd/sqrt(n), lower_ci = mean - 1.96*se, upper_ci = mean + 1.96*se)
+df %>% filter(!is.na(inOrOut)) %>% group_by(inOrOut) %>% summarize(n = n(), mean = mean(emp, na.rm=T), sd = sd(emp, na.rm=T), se = sd/sqrt(n), lower_ci = mean - 1.96*se, upper_ci = mean + 1.96*se) %>% knitr::kable()
 
 # test with removing attention check
-df %>% filter(!is.na(inOrOut), !is.na(att_check)) 
+# doesn't make a difference, so you can ignore the code below
+# df %>% filter(!is.na(inOrOut), !is.na(emp), !is.na(att_check)) %>% ggplot(aes(y=emp, x = inOrOut)) + geom_violin()
+# # df %>% filter(!is.na(inOrOut), !is.na(emp), !is.na(att_check)) %>% ggplot(aes(y=emp, x = inOrOut)) + geom_boxplot()
+# df %>% filter(!is.na(inOrOut), !is.na(emp), !is.na(att_check)) %>% ggplot(aes(y=emp, x = inOrOut)) + geom_bar(stat='summary') +
+#   geom_errorbar(stat='summary', width = 0.3)
+# create summary table with mean, sd, se, and cis after removing attention check
+# df %>% filter(!is.na(inOrOut), !is.na(att_check)) %>% group_by(inOrOut) %>% summarize(n = n(), mean = mean(emp, na.rm=T), sd = sd(emp, na.rm=T), se = sd/sqrt(n), lower_ci = mean - 1.96*se, upper_ci = mean + 1.96*se)
 ```
-Description of graph:
-Hypothesis based on graph:
+**Description of graph:** The graphs above display participants' self-rated empathetic concern for an in-group versus out-group stranger. Participants were able to rate their empathetic concern on a scale from 1 (none) to 7 (an extreme amount). In the box plot, we can see that the median response for empathy was slightly greater for users who received an in-group response or an out-group response, but overall the empathetic concern expressed across both groups is fairly high. The in-group had a larger range of empathy levels felt than the out-group. In the bar graph, we can see that the mean level of empathy for in-group and out-group responses are almost the same. The summary table tells us that the mean empathy level for the in-group is 5.25 (+/- 0.365) and the mean empathy level for the out-group is 5.35 (+/- 0.304). Although participants exhibit very slightly more empathetic concern for out-group strangers within this sample, this difference likely isn't significant since the error bars overlap. There is a chance that the reason we do not see a difference in empathy for in and out groups is because of the way that participants were primed. We explore this more below.
 
-```{r}
+**Hypothesis based on graph:** Whether a participant received an in-group or out-group response had little to no impact on the level of empathy they felt for the person they read about.
+
+```{r altruism, echo=FALSE}
 # Kaylee
 # remove extra text, just have numbers
 df$dg <- as.numeric(gsub("\\D", "", df$dg))
+# convert 125 which was supposed to be 25 since that's the maximum value
+df$dg[df$dg == 125] <- 25
 # graphs for altruism (dictator game) 
-df %>% filter(!is.na(inOrOut)) %>% ggplot(aes(y=emp, x = inOrOut)) + geom_violin()
-df %>% filter(!is.na(inOrOut)) %>% ggplot(aes(y=emp, x = inOrOut)) + geom_boxplot()
-df %>% filter(!is.na(inOrOut)) %>% ggplot(aes(y=emp, x = inOrOut)) + geom_bar(stat='summary') +
-  geom_errorbar(stat='summary', width = 0.3)
+df %>% filter(!is.na(inOrOut), !is.na(dg)) %>% ggplot(aes(y=dg, x = inOrOut)) + geom_violin() + ggtitle("Distribution of Money Given to Stranger for In-Group Vs. Out-Group") + ylab("Money given to stranger (out of 25)") + xlab("group")
+# df %>% filter(!is.na(inOrOut), !is.na(dg)) %>% ggplot(aes(y=dg, x = inOrOut)) + geom_boxplot()
+df %>% filter(!is.na(inOrOut), !is.na(dg)) %>% ggplot(aes(y=dg, x = inOrOut)) + geom_bar(stat='summary') +
+   geom_errorbar(stat='summary', width = 0.3) + ggtitle('Average Money Given to In-Group Vs. Out-Group Stranger') + ylab("average money") + xlab("Group")
+# df %>% filter(!is.na(inOrOut), !is.na(dg)) %>% ggplot(aes(x=dg)) + geom_histogram() + facet_wrap(~inOrOut)
 
+# create summary table with mean, sd, se, and cis
+df %>% filter(!is.na(inOrOut), !is.na(dg)) %>% group_by(inOrOut) %>% summarize(n = n(), median = median(dg), mean = mean(dg), sd = sd(dg), se = sd/sqrt(n), lower_ci = mean - 1.96*se, upper_ci = mean + 1.96*se)  %>% knitr::kable()
+
+# test graphs again after removing attention check
+# no affect of attention check, so you can ignore the code below
+# df %>% filter(!is.na(inOrOut), !is.na(dg), !is.na(att_check)) %>% ggplot(aes(y=dg, x = inOrOut)) + geom_violin() 
+# df %>% filter(!is.na(inOrOut), !is.na(dg), !is.na(att_check)) %>% ggplot(aes(y=dg, x = inOrOut)) + geom_boxplot()
+# df %>% filter(!is.na(inOrOut), !is.na(dg), !is.na(att_check)) %>% ggplot(aes(y=dg, x = inOrOut)) + geom_bar(stat='summary') +
+#   geom_errorbar(stat='summary', width = 0.3)
+
+# create another summary table after removing people who failed the attention check
+# no difference
+# df %>% filter(!is.na(inOrOut), !is.na(dg), !is.na(att_check)) %>% group_by(inOrOut) %>% summarize(n = n(), median = median(dg), mean = mean(dg), sd = sd(dg), se = sd/sqrt(n), lower_ci = mean - 1.96*se, upper_ci = mean + 1.96*se)
 ```
-Description of graph:
-Hypothesis based on graph:
+**Description of graph:**  As part of an altruism test, participants were compensated with 25 cents for participating in this study, but they were able to share this money with the stranger they read about. The violin graph depicted above displays the results of this altruism test. The in-group is on the left and out-group is on the right within this plot. Regardless of whether it was an in-group or out-group stranger, most participants chose to keep the majority of the money for themselves, represented by the wider distribution at lower values. Participants in the out-group may have been a little more giving since the distribution is more spread out. To examine this difference further, we created a bar plot representing the average money given with error bars. It seems that people in the out-group condition were slightly more giving on average in this sample, but this difference may not be represented in the population since the error bars overlap.
 
-```{r}
+**Hypothesis based on graph:** We hypothesize that there is little to no in-group bias present in regards to the participants exhibiting altruistic behavior toward in-group members. People seem no less likely to give money to an out-group member than they do to an in-group member. In fact, they may have been slightly more likely to give to give to an out-group member than an in-group member. This is demonstrated by the wider distribution at higher values for the violin plot and the greater mean for the out-group in the bar plot. Perhaps in-group bias is being obscured in this sample because the learning prime reduced in-group bias for a portion of the sample.
+
+```{r perspective taking, echo=FALSE}
 # Kennedy
-# graphs for perspective taking
-# create composite variable (avg of 5 questions)
-# make sure to reverse code questions so that a 7 represents better perspective taking
-# df %>% mutate(pt_1_reversed = case_when(pt_1 == "7" ~ 1, pt_1 == "6" ~ 2))
-# select the correct pt questions (reversed or normal)
-# df %>% mutate(PT_avg = rowMeans(select(., c("pt_1_reversed", "pt_2", "", "", ""))), na.rm=T)
-```
-Description of graph:
-Hypothesis based on graph:
+# reverse code some questions so that a 7 represents better perspective taking (only do this once)
+df <- df %>% mutate(pt_1_reversed = case_when(pt_1 == "7" ~ 1, pt_1 == "6" ~ 2, pt_1 == "5" ~ 3, pt_1 == "4" ~ 4, pt_1 == "3" ~ 5, pt_1 == "2" ~ 6, pt_1 == "1" ~ 7),
+              pt_3_reversed = case_when(pt_3 == "7" ~ 1, pt_3 == "6" ~ 2, pt_3 == "5" ~ 3, pt_3 == "4" ~ 4, pt_3 == "3" ~ 5, pt_3 == "2" ~ 6, pt_3 == "1" ~ 7),
+              pt_5_reversed = case_when(pt_5 == "7" ~ 1, pt_5 == "6" ~ 2, pt_5 == "5" ~ 3, pt_5 == "4" ~ 4, pt_5 == "3" ~ 5, pt_5 == "2" ~ 6, pt_5 == "1" ~ 7))
+# create composite variable (avg of 5 questions), greater avg = better perspective taking (only do this once)
+df <- df %>% mutate(PT_avg = rowMeans(select(., c("pt_1_reversed", "pt_2", "pt_3_reversed", "pt_4", "pt_5_reversed"))), na.rm=T)
 
+# graphs for perspective taking
+df %>% filter(!is.na(inOrOut), !is.na(PT_avg)) %>% ggplot(aes(y=PT_avg, x = inOrOut)) + geom_violin() + 
+  ggtitle("Ease of Perspective Taking for In-Group Vs. Out-Group Stranger") + ylab("perspective taking tcores") + xlab("group") 
+df %>% filter(!is.na(inOrOut), !is.na(PT_avg)) %>% ggplot(aes(y=PT_avg, x = inOrOut)) + geom_boxplot() +
+  ggtitle("Ease of Perspective Taking for In-Group Vs. Out-Group Stranger") + ylab("perspective taking tcores") + xlab("group") 
+df %>% filter(!is.na(inOrOut), !is.na(PT_avg)) %>% ggplot(aes(y=PT_avg, x = inOrOut)) + geom_bar(stat='summary') +
+  geom_errorbar(stat='summary', width = 0.3) + ggtitle("Average of Perspective Taking Scores for In-Group Vs. Out-Group Strangers") + ylab("perspective taking score Average") + xlab("group")
+
+# create summary table with mean, sd, se, and cis
+df %>% filter(!is.na(inOrOut)) %>% group_by(inOrOut) %>% summarize(n = n(), mean = mean(PT_avg, na.rm=T), sd = sd(PT_avg, na.rm=T), se = sd/sqrt(n), lower_ci = mean - 1.96*se, upper_ci = mean + 1.96*se) %>% knitr::kable()
+
+```
+
+**Description of graph:** Participants expressed how easy it was to understand the perspective of the stranger whose paragraph they read. They answered 5 questions, and these questions were averaged to obtain each participant's average ease of perspective taking. Higher scores represent better perspective taking. In the violin plot, it looks like participants in the in-group condition had a slightly easier time take the perspective because the distribution is wider at the highest values. The boxplot displays the same thing, but we just wanted to explore the data in a few ways. Since there didn't seem to be a clear difference between the in-group and out-group conditions in the distribution plots, we created a bar plot to more easily detect a difference. In the boxplot, it does appear that participants within this sample had a slightly easier time on average understanding an in-group stranger, but this difference doesn't appear to be significant since the error bars overlap.
+
+**Hypothesis based on graph:** We hypothesize that there isn't a difference between people's understanding of in-group and out-group strangers because there isn't a clear difference in the distributions depicted in the violin plot or in the means in the bar plot. Perhaps the learning prime was successful, so it's obscuring the difference in perspective taking for in-group and out-group strangers. 
+
+**Overall, there doesn't seem to be a difference in people's empathetic concern, altruism, or perspective taking for in-group vs. out-group strangers within this sample, which is counter intuitive given the well-demonstrated existence of in-group bias. The learning prime may have been successful in reducing in-group bias, obscuring the difference unless we separate by both conditions (in-group vs. out-group and learning vs. performance priming). We explore this below.**
 
 ### Influence of Priming on Out-Group Perspective Taking, Empathetic Concern, and Altruism
 
 ```{r}
+# Paulina
 # empathy
-df %>% filter(!is.na(inOrOut)) %>% ggplot(aes(y=emp, x = inOrOut)) + geom_violin() + facet_wrap(~priming_received)
+# graphs for empathy
+df %>% filter(!is.na(inOrOut), !is.na(emp)) %>% ggplot(aes(y=emp, x = priming_received)) + geom_violin() + facet_wrap(~inOrOut) +
+  ggtitle("Empathy for In-Group Vs. Out-Group Stranger Based on Priming Received") + xlab("priming received") + ylab('empathy')
+df %>% filter(!is.na(inOrOut), !is.na(emp)) %>% ggplot(aes(y=emp, x = priming_received)) + geom_boxplot() + facet_wrap(~inOrOut) +
+  ggtitle("Empathy for In-Group Vs. Out-Group Stranger Based on Priming Received") + xlab("priming received") + ylab('empathy')
+df %>% filter(!is.na(inOrOut), !is.na(emp)) %>% ggplot(aes(y=emp, x = priming_received)) + geom_bar(stat='summary') +
+  geom_errorbar(stat='summary', width = 0.3) + facet_wrap(~inOrOut) +
+  ggtitle("Average Empathy for In-Group Vs. Out-Group Strangers Based on Priming Received") + xlab("priming received") + ylab("average empathy")
+
+# create summary table with mean, sd, se, and cis
+df %>% filter(!is.na(inOrOut), !is.na(emp)) %>% group_by(inOrOut, priming_received) %>% summarize(n = n(), mean = mean(emp), sd = sd(emp), se = sd/sqrt(n), lower_ci = mean - 1.96*se, upper_ci = mean + 1.96*se)  %>% knitr::kable()
 ```
-Description of graph:
-Hypothesis based on graph:
+**Description of graph:** We created the violin plot and the box plot to examine the distributions, but the following description focuses on the bar plot. Within the study's in-group, participants who were primed with a "learning orientation" exhibited a mean empathetic concern score of 5.69, whereas those who received the "performance orientation" priming displayed a slightly lower mean score of 4.73. In the "learning orientation" in-group, the empathetic concern scores exhibited relatively low variability, as evidenced by the narrower confidence interval (5.33 to 6.04) and a smaller standard deviation (1.08). This suggests a more consistent range of scores within this group. Conversely, the "performance orientation" in-group displayed higher variability, with a wider confidence interval (4.10 to 5.36) and a larger standard deviation (1.76). These statistics indicate greater diversity in empathetic concern scores within this group, signifying less consistency compared to the "learning orientation" group. Furthermore, the error bars do not overlap, meaning that we can safely assume a true difference exists between the empathy expressed for in-group participants depending on the priming they received.
+
+In contrast, for the out-group, individuals subjected to the "learning orientation" priming had an average empathetic concern score of 5.48, while those exposed to the "performance orientation" priming yielded a mean empathetic concern score of 5.23. In the "learning orientation" out-group, the empathetic concern scores showed moderate variability, as indicated by the confidence interval (5.10 to 5.87) and standard deviation (1.09). Meanwhile, in the "performance orientation" out-group, there was also variability, with a confidence interval (4.75 to 5.70) and a slightly higher standard deviation (1.36). This implies a range of scores with some differences within this group, reflecting a moderate level of variability. Unlike the in-group condition, the error bars do overlap in out-group graph. This indicates that the observed difference in empathetic concern dependent on the priming received is not significant. There may not be a difference in the empathetic concern expressed for out-group strangers when a different priming is received for some reason.
+
+Lastly, there doesn't seem to be a significant difference between the empathetic concern expressed by in-group or out-group participants who received the same priming. For example, the mean empathy for in-group participants who received the learning orientation was 5.69 (+/- 0.357) whereas the mean for out-group participants who received the learning orientation was 5.48 (+/- 0.397). Since the error bars overlapped, this was not a significant difference. The same is true for in-group and out-group participants who received the performance orientation because their error bars overlap.
+
+**Hypothesis based on graph:** Based on the graphs above, we hypothesize that only in-group participants (not out-group) primed with a learning orientation will express more empathetic concern than those primed with a performance orientation. Although participants who received the learning orientation trended towards expressing more empathetic concern in the in-group and out-group condition, the error bars indicate that the difference was only significant for participants in the in-group condition.
 
 ```{r}
+# Kirsten
 # altruism
+df %>% filter(!is.na(inOrOut), !is.na(dg)) %>% ggplot(aes(y=dg, x = priming_received)) + geom_violin() + facet_wrap(~inOrOut) +
+  ggtitle("Altruism for In-Group Vs. Out-Group Stranger Based on Priming Received") + xlab("priming received") + ylab('money given to stranger (out of 25 cents)')
+df %>% filter(!is.na(inOrOut), !is.na(dg)) %>% ggplot(aes(y=dg, x = priming_received)) + geom_boxplot() + facet_wrap(~inOrOut) +
+  ggtitle("Altruism for In-Group Vs. Out-Group Stranger Based on Priming Received") + xlab("priming received") + ylab('money given to stranger (out of 25 cents)')
+df %>% filter(!is.na(inOrOut), !is.na(dg)) %>% ggplot(aes(y=dg, x = priming_received)) + geom_bar(stat='summary') +
+  geom_errorbar(stat='summary', width = 0.3) + facet_wrap(~inOrOut) +
+  ggtitle("Average Altruism for In-Group Vs. Out-Group Strangers Based on Priming Received") + xlab("priming received") + ylab("average money given to stranger (out of 25 cents)")
+
+# create summary table with mean, sd, se, and cis
+df %>% filter(!is.na(inOrOut), !is.na(dg)) %>% group_by(inOrOut, priming_received) %>% summarize(n = n(), mean = mean(dg), sd = sd(dg), se = sd/sqrt(n), lower_ci = mean - 1.96*se, upper_ci = mean + 1.96*se)  %>% knitr::kable()
 
 ```
-Description of graph:
-Hypothesis based on graph:
+
+**Description of graph:**
+
+**Hypothesis based on graph:**
 
 ```{r}
+# Jaqueline
 # perspective taking
+# graphs for perspective taking
+df %>% filter(!is.na(inOrOut), !is.na(PT_avg)) %>% ggplot(aes(y=PT_avg, x = priming_received)) + geom_violin() + facet_wrap(~inOrOut) +
+  ggtitle("Ease of Perspective Taking for In-Group Vs. Out-Group Stranger Based on Priming Received") + ylab("perspective taking scores") + xlab("priming received") 
+df %>% filter(!is.na(inOrOut), !is.na(PT_avg)) %>% ggplot(aes(y=PT_avg, x = priming_received)) + geom_boxplot() + facet_wrap(~inOrOut) +
+  ggtitle("Ease of Perspective Taking for In-Group Vs. Out-Group Stranger Based on Priming Received") + ylab("perspective taking tcores") + xlab("priming received") 
+df %>% filter(!is.na(inOrOut), !is.na(PT_avg)) %>% ggplot(aes(y=PT_avg, x = priming_received)) + geom_bar(stat='summary') + facet_wrap(~inOrOut) +
+  geom_errorbar(stat='summary', width = 0.3) +
+  ggtitle("Average of Perspective Taking Scores for In-Group Vs. Out-Group Strangers") + ylab("perspective taking score average") + xlab("priming received")
 
+# create summary table with mean, sd, se, and cis
+df %>% filter(!is.na(inOrOut)) %>% group_by(inOrOut, priming_received) %>% summarize(n = n(), mean = mean(PT_avg, na.rm=T), sd = sd(PT_avg, na.rm=T), se = sd/sqrt(n), lower_ci = mean - 1.96*se, upper_ci = mean + 1.96*se) %>% knitr::kable()
 ```
-Description of graph:
-Hypothesis based on graph:
+
+**Description of graph:**
+
+**Hypothesis based on graph:**
+
+**Overall Summary of second section:**
+
 # References
