@@ -263,9 +263,35 @@ condition.
 | out     | learning         |  29 | 5.551724 | 5.889374 | 1.093629 | 3.408211 |  7.695238 |
 | out     | performance      |  31 | 7.645161 | 9.758922 | 1.752754 | 4.209763 | 11.080559 |
 
-**Description of graph:**
+**Description of graph:** The violin and boxplot are visualizations of
+Altruism distributions found between people that were chosen for
+In-Groups vs Out-Groups that received either learning or performance
+priming. The barplot shown is the average level of Altruism found
+between the same testing groups. To examine the barplot further, four
+means of Altruism levels were observed. Those who were in the In-Group
+and received learning priming had a mean of 5.17 points with a standard
+error of 1.36. However, those in the In-Group but with performance
+priming were observed to have a mean Altruism score of 5.27 with a
+standard error of 1.41. Similarly, for the Out-group, the learning
+priming group received a mean Altruism score of 5.55 and standard error
+of 1.09. Like the In-Group, the Out-group of people who received
+performance priming had a higher Altruism average than those in the
+learning priming group with an average of 7.65 and standard error of
+1.75. In the In-Group and Out-Group, each group that received
+performance priming had higher means than those in learning priming
+groups.
 
-**Hypothesis based on graph:**
+Due to error bar overlap for the In-Group, this is not a significant
+variance between learning and performance priming groups. Similarly,
+there is no significant difference in altruism for out-group participans
+who received a different priming because the error bars overlap. In
+fact, all of the error bars overlap, so there is no difference in
+altruism for any combination of in-group and out-group with learning or
+performance priming.
+
+**Hypothesis based on graph:** Based on the graphs above, we hypothesize
+that there is no difference in altruism for any combination of in-group
+and out-group with learning or performance orientation.
 
 ![](readme_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->![](readme_files/figure-gfm/unnamed-chunk-3-2.png)<!-- -->![](readme_files/figure-gfm/unnamed-chunk-3-3.png)<!-- -->
 
