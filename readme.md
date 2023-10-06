@@ -276,11 +276,71 @@ condition.
 | out     | learning         |  31 | 5.793103 | 0.8643458 | 0.1552411 | 5.488831 | 6.097376 |
 | out     | performance      |  32 | 5.677419 | 1.0926145 | 0.1931488 | 5.298848 | 6.055991 |
 
-**Description of graph:**
+**Description of graph:** In the violin plot and boxplot above, we
+wanted to see the distribution for the ease of perspective taking for
+people that were chosen for In-Groups compared to Out- groups based on
+the priming that each participant received. The distributions look
+fairly similar across the in-group and out-group participants, although
+perhaps there is a bit more spread for the in-group participants. Then
+within in-group and out-group conditions, the priming received doesn’t
+seem to have influenced perspective taking very much either. Perhaps
+there is slightly more spread for people who received a performance
+priming both within the in-group and out-group condition, but there is
+no clear difference once again.
 
-**Hypothesis based on graph:**
+To better visualize the difference between each of the conditions, we
+plotted the means with error bars. Within the In-Group participants,
+those who received the learning prime had a mean of around 5.97, which
+was slightly higher than the mean of those who received the performance
+prime, which was around 5.77. In the Learning Prime In-Group, the upper
+confidence interval was about 6.313 and the lower confidence was about
+5.629, with a difference of about 0.684. This means that there was
+slightly less variability in perspective taking scores for the Learning
+Prime In-Group, as the Performance Prime In- Group had a upper
+confidence interval of about 6.217 and the lower confidence was about
+5.329, with a difference of about 0.888. This would also mean that more
+people in the Learning Prime In-Group chose almost the same scores than
+people in the Performance Prime In-Group. Since the error bars overlap,
+the difference observed between the perspective taking of people in the
+in-group across the 2 orientations was likely not significant.
 
-**Overall Summary of second section:**
+Within the Out-Group participants, those who received the learning prime
+had a mean of around 5.79, which was slightly higher than the mean of
+those who received the performance prime, which was around 5.67. In the
+Learning Prime Out-Group, the upper confidence interval was about 6.097
+and the lower confidence was about 5.489, with a difference of about
+0.608. This means that there was also slightly less variability in
+perspective taking scores for the Learning Prime Out-Group, as the
+Performance Prime Out-Group had a upper confidence interval of about
+6.055 and the lower confidence was about 5.299, with a difference of
+about 0.756. This would also mean that more people in the Learning Prime
+Out-Group chose almost the same scores than people in the Performance
+Prime Out-Group.
+
+In the error-bar plot, the error bars for all of the groups overlap,
+with the Learning Prime In-Group and Performance Prime In-Group
+overlapping each other, and the Learning Prime Out-Group and Performance
+Prime Out-Group overlapping each other as well. This means that there is
+likely no significant difference in perspective taking scores between
+In-Groups and Out-Groups based on the priming that each participant
+received.
+
+**Hypothesis based on graph:** Based on the graphs above, we hypothesize
+that both in-Group and out-group participants do not show much of a
+difference in perspective taking regardless of their priming received,
+as there were little to no differences in the plots. An in-group bias
+does not appear to exist within our sample since the plots are
+relatively the same across in-group and out-groups. However, the lack of
+in-group bias is likely not due to the effectiveness of the learning
+orientation because there don’t appear to be significant differences
+between the learning and performance orientation groups within the
+in-group or out-group condition.
+
+**There doesn’t seem to be much in-group bias in our sample, but we
+can’t attribute this lack of bias to the learning priming. For the most
+part, similar empathy, altruism, and perspective taking was exhibited
+across people who received different priming and read about the same
+kind of stranger (in-group or out-group).**
 
 # References
 
