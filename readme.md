@@ -93,7 +93,7 @@ Overall, there are:
 | inOrOut |   n |     mean |       sd |        se | lower_ci | upper_ci |
 |:--------|----:|---------:|---------:|----------:|---------:|---------:|
 | in      |  65 | 5.246154 | 1.500320 | 0.1860919 | 4.881414 | 5.610894 |
-| out     |  63 | 5.350000 | 1.232677 | 0.1553027 | 5.045607 | 5.654393 |
+| out     |  59 | 5.372881 | 1.230339 | 0.1601765 | 5.058935 | 5.686827 |
 
 **Description of graph:** The graphs above display participants’
 self-rated empathetic concern for an in-group versus out-group stranger.
@@ -122,7 +122,7 @@ empathy they felt for the person they read about.
 | inOrOut |   n | median |     mean |       sd |        se | lower_ci | upper_ci |
 |:--------|----:|-------:|---------:|---------:|----------:|---------:|---------:|
 | in      |  65 |      0 | 5.215385 | 7.861084 | 0.9750474 | 3.304292 | 7.126478 |
-| out     |  60 |      5 | 6.633333 | 8.123969 | 1.0487999 | 4.577686 | 8.688981 |
+| out     |  59 |      5 | 6.745763 | 8.146489 | 1.0605825 | 4.667021 | 8.824504 |
 
 **Description of graph:** As part of an altruism test, participants were
 compensated with 25 cents for participating in this study, but they were
@@ -155,7 +155,7 @@ for a portion of the sample.
 | inOrOut |   n |     mean |        sd |        se | lower_ci | upper_ci |
 |:--------|----:|---------:|----------:|----------:|---------:|---------:|
 | in      |  65 | 5.880000 | 1.1284946 | 0.1399725 | 5.605654 | 6.154346 |
-| out     |  63 | 5.733333 | 0.9823298 | 0.1237619 | 5.490760 | 5.975907 |
+| out     |  59 | 5.752542 | 0.9793305 | 0.1274980 | 5.502646 | 6.002438 |
 
 **Description of graph:** Participants expressed how easy it was to
 understand the perspective of the stranger whose paragraph they read.
@@ -196,7 +196,7 @@ learning vs. performance priming). We explore this below.**
 |:--------|:-----------------|----:|---------:|---------:|----------:|---------:|---------:|
 | in      | learning         |  35 | 5.685714 | 1.078437 | 0.1822890 | 5.328428 | 6.043001 |
 | in      | performance      |  30 | 4.733333 | 1.760355 | 0.3213954 | 4.103398 | 5.363268 |
-| out     | learning         |  29 | 5.482759 | 1.089584 | 0.2023306 | 5.086191 | 5.879327 |
+| out     | learning         |  28 | 5.535714 | 1.070899 | 0.2023810 | 5.139048 | 5.932381 |
 | out     | performance      |  31 | 5.225807 | 1.359158 | 0.2441121 | 4.747347 | 5.704266 |
 
 **Description of graph:** We created the violin plot and the box plot to
@@ -260,7 +260,7 @@ condition.
 |:--------|:-----------------|----:|---------:|---------:|---------:|---------:|----------:|
 | in      | learning         |  35 | 5.171429 | 8.074964 | 1.364918 | 2.496189 |  7.846668 |
 | in      | performance      |  30 | 5.266667 | 7.741217 | 1.413346 | 2.496508 |  8.036826 |
-| out     | learning         |  29 | 5.551724 | 5.889374 | 1.093629 | 3.408211 |  7.695238 |
+| out     | learning         |  28 | 5.750000 | 5.898054 | 1.114627 | 3.565330 |  7.934670 |
 | out     | performance      |  31 | 7.645161 | 9.758922 | 1.752754 | 4.209763 | 11.080559 |
 
 **Description of graph:** The violin and boxplot are visualizations of
@@ -299,8 +299,8 @@ and out-group with learning or performance orientation.
 |:--------|:-----------------|----:|---------:|----------:|----------:|---------:|---------:|
 | in      | learning         |  35 | 5.971429 | 1.0325786 | 0.1745376 | 5.629335 | 6.313522 |
 | in      | performance      |  30 | 5.773333 | 1.2403930 | 0.2264637 | 5.329464 | 6.217202 |
-| out     | learning         |  31 | 5.793103 | 0.8643458 | 0.1552411 | 5.488831 | 6.097376 |
-| out     | performance      |  32 | 5.677419 | 1.0926145 | 0.1931488 | 5.298848 | 6.055991 |
+| out     | learning         |  28 | 5.835714 | 0.8486217 | 0.1603744 | 5.521380 | 6.150048 |
+| out     | performance      |  31 | 5.677419 | 1.0926145 | 0.1962394 | 5.292790 | 6.062049 |
 
 **Description of graph:** In the violin plot and boxplot above, we
 wanted to see the distribution for the ease of perspective taking for

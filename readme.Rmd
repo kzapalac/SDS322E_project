@@ -47,7 +47,6 @@ Overall, there are:
 ```{r load data, include=FALSE}
 library(tidyverse)
 df <- read.csv("LP_dictator_cleaned.csv")
-df <- df %>% filter(startDate != "5/22/13 10:06") # remove bad response
 ```
 
 ### In-Group vs. Out-Group Empathetic Concern, Altruism, and Perspective Taking
@@ -79,10 +78,6 @@ df %>% filter(!is.na(inOrOut)) %>% group_by(inOrOut) %>% summarize(n = n(), mean
 
 ```{r altruism, echo=FALSE}
 # Kaylee
-# remove extra text, just have numbers
-df$dg <- as.numeric(gsub("\\D", "", df$dg))
-# convert 125 which was supposed to be 25 since that's the maximum value
-df$dg[df$dg == 125] <- 25
 # graphs for altruism (dictator game) 
 df %>% filter(!is.na(inOrOut), !is.na(dg)) %>% ggplot(aes(y=dg, x = inOrOut)) + geom_violin() + ggtitle("Distribution of Money Given to Stranger for In-Group Vs. Out-Group") + ylab("Money given to stranger (out of 25)") + xlab("group")
 # df %>% filter(!is.na(inOrOut), !is.na(dg)) %>% ggplot(aes(y=dg, x = inOrOut)) + geom_boxplot()
@@ -110,13 +105,6 @@ df %>% filter(!is.na(inOrOut), !is.na(dg)) %>% group_by(inOrOut) %>% summarize(n
 
 ```{r perspective taking, echo=FALSE}
 # Kennedy
-# reverse code some questions so that a 7 represents better perspective taking (only do this once)
-df <- df %>% mutate(pt_1_reversed = case_when(pt_1 == "7" ~ 1, pt_1 == "6" ~ 2, pt_1 == "5" ~ 3, pt_1 == "4" ~ 4, pt_1 == "3" ~ 5, pt_1 == "2" ~ 6, pt_1 == "1" ~ 7),
-              pt_3_reversed = case_when(pt_3 == "7" ~ 1, pt_3 == "6" ~ 2, pt_3 == "5" ~ 3, pt_3 == "4" ~ 4, pt_3 == "3" ~ 5, pt_3 == "2" ~ 6, pt_3 == "1" ~ 7),
-              pt_5_reversed = case_when(pt_5 == "7" ~ 1, pt_5 == "6" ~ 2, pt_5 == "5" ~ 3, pt_5 == "4" ~ 4, pt_5 == "3" ~ 5, pt_5 == "2" ~ 6, pt_5 == "1" ~ 7))
-# create composite variable (avg of 5 questions), greater avg = better perspective taking (only do this once)
-df <- df %>% mutate(PT_avg = rowMeans(select(., c("pt_1_reversed", "pt_2", "pt_3_reversed", "pt_4", "pt_5_reversed"))), na.rm=T)
-
 # graphs for perspective taking
 df %>% filter(!is.na(inOrOut), !is.na(PT_avg)) %>% ggplot(aes(y=PT_avg, x = inOrOut)) + geom_violin() + 
   ggtitle("Ease of Perspective Taking for In-Group Vs. Out-Group Stranger") + ylab("perspective taking tcores") + xlab("group") 
