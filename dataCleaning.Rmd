@@ -10,6 +10,9 @@ knitr::opts_chunk$set(echo = F)
 library(tidyverse)
 # install.packages("janitor")
 library(janitor) # used to clean the column names
+library(tidytext) # used to clean text
+library(wordcloud) # used to create word cloud
+library(textdata) # for sentiment analysis
 ```
 
 
@@ -80,9 +83,6 @@ df <- df %>%
   
   # reorder columns
   select(startDate:self_disc, priming_response, att_check:condition, pt_1_reversed:trait_performance_avg)
-
-# clean letter of support text and extract sentiment
-  
   
 # preview the cleaned dataset
 glimpse(df)
@@ -106,8 +106,11 @@ df <- df %>% select(-na_counts, -finished, -consent) # no longer need na counts.
 
 remaining_participants <- nrow(df) # report the remaining participants
 
+# impute missing value for 1 participant (didn't answer lp_scale_2_8)
+df <- df %>% mutate(lp_scale_2_8 = ifelse(is.na(lp_scale_2_8), median(lp_scale_2_8, na.rm=T), lp_scale_2_8))
+
 # save the cleaned dataset
-write.csv(df, 'LP_dictator_cleaned.csv', row.names=F)
+# write.csv(df, 'LP_dictator_cleaned.csv', row.names=F)
 ```
 There are `r num_columns` columns in our dataset after cleaning. Although there are `r num_rows` rows with each
 row representing 1 participant's survey responses, many of these rows have lots of 
@@ -211,16 +214,74 @@ Should we remove these 2 participants data?
 - `note`: Now you have the opportunity to write a note to the participant you just read about. Please respond with your thoughts and feelings to his/her "interesting thing that has happened". Your message will be emailed to this participant (and he/she will not receive any other information about you).Please write a 1-2 paragraph response below:
 
 ```{r textual analysis}
+# clean letter of support text and extract sentiment
+text_cleaned <- df %>% rownames_to_column('participantID') %>% select(participantID, note, age, gender, priming_received, inOrOut, condition) %>%
+  unnest_tokens(word, note) 
 
-```
+# shows that our top words are stop words
+# text_cleaned %>% 
+#   count(word) %>%
+#   arrange(desc(n))
 
-## Exploratory Data Analysis
-```{r}
+# we can see that by removing stop words, we went from 9890 words to only 2306
+text_cleaned_no_stop_words <- text_cleaned %>% filter(!word %in% stop_words$word &
+                                      str_length(word) > 1) 
 
-```
+# top words used
+# text_cleaned_no_stop_words %>%
+#   count(word) %>%
+#   arrange(desc(n))
 
-## Classification Using Logistic Regression
-```{r modeling}
+# create word cloud for out group
+out_words <- text_cleaned_no_stop_words %>% filter(inOrOut == 'out') %>% count(word) %>% arrange(desc(n))
+wordcloud(words = out_words$word, freq = out_words$n, max.words = 20)
+title('Top 20 Words for Out-Group Participants')
+# create word cloud for in group
+in_words <- text_cleaned_no_stop_words %>% filter(inOrOut == 'in') %>% count(word) %>% arrange(desc(n))
+wordcloud(words = in_words$word, freq = in_words$n, max.words = 20)
+title('Top 20 Words for In-Group Participants')
+  
+# adding sentiment scores to dataset
+afinn <- get_sentiments("afinn")
 
+text_cleaned_w_scores <- text_cleaned_no_stop_words %>% select(participantID, word) %>% 
+  inner_join(afinn, by = 'word')
+
+# average sentiment expressed by each participant
+participant_avg_sentiment <- text_cleaned_w_scores %>% group_by(participantID) %>% summarize(avg_sentiment = mean(value), words_with_sentiment = n())
+
+# add to original df
+df <- df %>% rownames_to_column('participantID') %>% left_join(participant_avg_sentiment, by = 'participantID')
+
+# don't have the sentiment for everyone
+cat('I calculated the average sentiment expressed per person. Sometimes none of the words that a person used were associated with a sentiment, so they couldn\'t be given an average sentiment score.There are', sum(is.na(df$avg_sentiment)), 'people who don\'t have sentiment scores. I replaced the NAs with 0\'s')
+
+# replace NA with 0 for people who didn't express sentiment
+df = df %>% mutate(avg_sentiment = ifelse(is.na(avg_sentiment), 0, avg_sentiment), words_with_sentiment = ifelse(is.na(words_with_sentiment), 0, words_with_sentiment))
+
+# pronoun usage
+first_person <- text_cleaned %>% 
+  filter(word == 'i' | word == 'me' | word == 'my' | word == 'mine' | word == 'we' | word == 'us' | word == 'our' | word == 'ours') %>% 
+  group_by(participantID) %>% 
+  summarize(first_person_pronoun_count = n())
+second_person <- text_cleaned %>% 
+  filter(word == 'you' | word == 'your' | word == 'yours') %>% 
+  group_by(participantID) %>% 
+  summarize(second_person_pronoun_count = n())
+third_person <- text_cleaned %>% 
+  filter(word == 'he' | word == 'him' | word == 'his' | word == 'she' | word == 'her' | word == 'hers' | word == 'they' | word == 'them' | word == 'theirs') %>% 
+  group_by(participantID) %>% 
+  summarize(third_person_pronoun_count = n())
+
+# join pronoun usage
+df <- df %>% left_join(first_person, by = 'participantID') %>% mutate(first_person_pronoun_count = ifelse(is.na(first_person_pronoun_count), 0, first_person_pronoun_count))
+df <- df %>% left_join(second_person, by = 'participantID') %>% mutate(second_person_pronoun_count = ifelse(is.na(second_person_pronoun_count), 0, second_person_pronoun_count))
+df <- df %>% left_join(third_person, by = 'participantID') %>% mutate(third_person_pronoun_count = ifelse(is.na(third_person_pronoun_count), 0, third_person_pronoun_count))
+
+print('Here is the final data frame:')
+glimpse(df)
+
+# save to file
+write.csv(df, 'LP_dictator_cleaned.csv', row.names=F)
 ```
 

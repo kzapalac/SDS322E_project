@@ -49,6 +49,15 @@ library(tidyverse)
 df <- read.csv("LP_dictator_cleaned.csv")
 ```
 
+
+### Distributions of variables
+```{r}
+# Kirsten feel free to look at the distributions for all of our variables and see if there is anything interesting
+# you can also separate by groups
+ggplot(df, aes(x = pt_1)) + geom_bar()
+```
+
+
 ### In-Group vs. Out-Group Empathetic Concern, Altruism, and Perspective Taking
 ```{r empathetic concern, echo=FALSE}
 # Christiana
@@ -240,5 +249,132 @@ groups within the in-group or out-group condition.
 this lack of bias to the learning priming. For the most part, similar empathy, altruism, and
 perspective taking was exhibited across people who received different priming and
 read about the same kind of stranger (in-group or out-group).**
+
+## Textual Analysis
+### Sentiment Expressed
+```{r sentiment for in v out}
+# comparing average sentiment scores for in group vs out group
+# summary table
+df %>% group_by(inOrOut) %>% summarize(n = n(), mean = mean(avg_sentiment), sd = sd(avg_sentiment), se = sd/sqrt(n), lower_ci = mean - 1.96*se, upper_ci = mean + 1.96*se)
+# graphing
+df %>% ggplot(aes(y=avg_sentiment, x = inOrOut)) + geom_bar(stat='summary') + 
+  geom_errorbar(stat='summary', width = 0.3) + labs(x = "In or Out", y = "Sentiment") +
+  ggtitle('Average Sentiment Expressed for In Vs. Out-group') +
+  theme(plot.title = element_text(hjust = 0.5))
+  
+```
+
+```{r sentiment for priming}
+# comparing average sentiment scores for learning vs performance priming
+# summary table
+df %>% group_by(priming_received) %>% summarize(n = n(), mean = mean(avg_sentiment), sd = sd(avg_sentiment), se = sd/sqrt(n), lower_ci = mean - 1.96*se, upper_ci = mean + 1.96*se)
+# graphing
+df %>% ggplot(aes(y=avg_sentiment, x = priming_received)) + geom_bar(stat='summary') + 
+  geom_errorbar(stat='summary', width = 0.3) + labs(x = "In or Out", y = "Sentiment") +
+  ggtitle('Average Sentiment Expressed by Priming Received') +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+```{r sentiment by condition}
+# comparing average sentiment scores for in group vs out group
+# summary table
+df %>% group_by(inOrOut, priming_received) %>% summarize(n = n(), mean = mean(avg_sentiment), sd = sd(avg_sentiment), se = sd/sqrt(n), lower_ci = mean - 1.96*se, upper_ci = mean + 1.96*se)
+# graphing
+df %>% ggplot(aes(y=avg_sentiment, x = priming_received)) + geom_bar(stat='summary') + 
+  geom_errorbar(stat='summary', width = 0.3) + facet_wrap(~inOrOut) +
+  labs(x = "In or Out", y = "Sentiment") +
+  ggtitle('Average Sentiment Expressed by Condition') +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+#### Pronoun Usage
+```{r pronoun usage in v out}
+# comparing first person pronoun usage for in group vs out group
+# summary table
+df %>% group_by(inOrOut) %>% summarize(n = n(), mean = mean(first_person_pronoun_count), sd = sd(first_person_pronoun_count), se = sd/sqrt(n), lower_ci = mean - 1.96*se, upper_ci = mean + 1.96*se)
+# graphing
+df %>% ggplot(aes(y=first_person_pronoun_count, x = inOrOut)) + geom_bar(stat='summary') + 
+  geom_errorbar(stat='summary', width = 0.3) + labs(x = "In or Out", y = "Average First Person Pronoun Usage") +
+  ggtitle('Average First Person Pronoun Usage for In Vs. Out-group') +
+  theme(plot.title = element_text(hjust = 0.5))
+
+# comparing second person pronoun usage for in group vs out group
+# summary table
+df %>% group_by(inOrOut) %>% summarize(n = n(), mean = mean(second_person_pronoun_count), sd = sd(second_person_pronoun_count), se = sd/sqrt(n), lower_ci = mean - 1.96*se, upper_ci = mean + 1.96*se)
+# graphing
+df %>% ggplot(aes(y=second_person_pronoun_count, x = inOrOut)) + geom_bar(stat='summary') + 
+  geom_errorbar(stat='summary', width = 0.3) + labs(x = "In or Out", y = "Average Second Person Pronoun Usage") +
+  ggtitle('Average Second Person Pronoun Usage for In Vs. Out-group') +
+  theme(plot.title = element_text(hjust = 0.5))
+
+# comparing third person pronoun usage for in group vs out group
+# summary table
+df %>% group_by(inOrOut) %>% summarize(n = n(), mean = mean(third_person_pronoun_count), sd = sd(third_person_pronoun_count), se = sd/sqrt(n), lower_ci = mean - 1.96*se, upper_ci = mean + 1.96*se)
+# graphing
+df %>% ggplot(aes(y=third_person_pronoun_count, x = inOrOut)) + geom_bar(stat='summary') + 
+  geom_errorbar(stat='summary', width = 0.3) + labs(x = "In or Out", y = "Average Third Person Pronoun Usage") +
+  ggtitle('Average Third Person Pronoun Usage for In Vs. Out-group') +
+  theme(plot.title = element_text(hjust = 0.5))
+
+```
+
+```{r pronoun usage priming}
+# comparing first person pronoun usage for in group vs out group
+# summary table
+df %>% group_by(priming_received) %>% summarize(n = n(), mean = mean(first_person_pronoun_count), sd = sd(first_person_pronoun_count), se = sd/sqrt(n), lower_ci = mean - 1.96*se, upper_ci = mean + 1.96*se)
+# graphing
+df %>% ggplot(aes(y=first_person_pronoun_count, x = priming_received)) + geom_bar(stat='summary') + 
+  geom_errorbar(stat='summary', width = 0.3) + labs(x = "Priming Received", y = "Average First Person Pronoun Usage") +
+  ggtitle('Average First Person Pronoun Usage by Priming Received') +
+  theme(plot.title = element_text(hjust = 0.5))
+
+# comparing second person pronoun usage for in group vs out group
+# summary table
+df %>% group_by(priming_received) %>% summarize(n = n(), mean = mean(second_person_pronoun_count), sd = sd(second_person_pronoun_count), se = sd/sqrt(n), lower_ci = mean - 1.96*se, upper_ci = mean + 1.96*se)
+# graphing
+df %>% ggplot(aes(y=second_person_pronoun_count, x = priming_received)) + geom_bar(stat='summary') + 
+  geom_errorbar(stat='summary', width = 0.3) + labs(x = "Priming Received", y = "Average Second Person Pronoun Usage") +
+  ggtitle('Average Second Person Pronoun Usage by Priming Received') +
+  theme(plot.title = element_text(hjust = 0.5))
+
+# comparing third person pronoun usage for in group vs out group
+# summary table
+df %>% group_by(priming_received) %>% summarize(n = n(), mean = mean(third_person_pronoun_count), sd = sd(third_person_pronoun_count), se = sd/sqrt(n), lower_ci = mean - 1.96*se, upper_ci = mean + 1.96*se)
+# graphing
+df %>% ggplot(aes(y=third_person_pronoun_count, x = priming_received)) + geom_bar(stat='summary') + 
+  geom_errorbar(stat='summary', width = 0.3) + labs(x = "Priming Received", y = "Average Third Person Pronoun Usage") +
+  ggtitle('Average Third Person Pronoun Usage by Priming Received') +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+```{r pronoun usage by condition}
+# comparing first person pronoun usage for in group vs out group
+# summary table
+df %>% group_by(inOrOut, priming_received) %>% summarize(n = n(), mean = mean(first_person_pronoun_count), sd = sd(first_person_pronoun_count), se = sd/sqrt(n), lower_ci = mean - 1.96*se, upper_ci = mean + 1.96*se)
+# graphing
+df %>% ggplot(aes(y=first_person_pronoun_count, x = priming_received)) + geom_bar(stat='summary') + 
+  geom_errorbar(stat='summary', width = 0.3) + facet_wrap(~inOrOut) +
+  labs(x = "Priming Received", y = "Average First Person Pronoun Usage") +
+  ggtitle('Average First Person Pronoun Usage by Priming Received') +
+  theme(plot.title = element_text(hjust = 0.5))
+
+# comparing second person pronoun usage for in group vs out group
+# summary table
+df %>% group_by(inOrOut, priming_received) %>% summarize(n = n(), mean = mean(second_person_pronoun_count), sd = sd(second_person_pronoun_count), se = sd/sqrt(n), lower_ci = mean - 1.96*se, upper_ci = mean + 1.96*se)
+# graphing
+df %>% ggplot(aes(y=second_person_pronoun_count, x = priming_received)) + geom_bar(stat='summary') + 
+  geom_errorbar(stat='summary', width = 0.3) + facet_wrap(~inOrOut) +
+  labs(x = "Priming Received", y = "Average Second Person Pronoun Usage") +
+  ggtitle('Average Second Person Pronoun Usage by Priming Received') +
+  theme(plot.title = element_text(hjust = 0.5))
+
+# comparing third person pronoun usage for in group vs out group
+# summary table
+df %>% group_by(inOrOut, priming_received) %>% summarize(n = n(), mean = mean(third_person_pronoun_count), sd = sd(third_person_pronoun_count), se = sd/sqrt(n), lower_ci = mean - 1.96*se, upper_ci = mean + 1.96*se)
+# graphing
+df %>% ggplot(aes(y=third_person_pronoun_count, x = priming_received)) + geom_bar(stat='summary') + 
+  geom_errorbar(stat='summary', width = 0.3) + facet_wrap(~inOrOut) +
+  labs(x = "Priming Received", y = "Average Third Person Pronoun Usage") +
+  ggtitle('Average Third Person Pronoun Usage by Priming Received') +
+  theme(plot.title = element_text(hjust = 0.5))
+```
 
 # References
