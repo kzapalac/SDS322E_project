@@ -250,6 +250,87 @@ this lack of bias to the learning priming. For the most part, similar empathy, a
 perspective taking was exhibited across people who received different priming and
 read about the same kind of stranger (in-group or out-group).**
 
+## Gender
+```{r gender}
+# % of males and females in each group
+knitr::kable(prop.table(table(df$gender, df$inOrOut), margin = 2))
+
+# empathy by gender
+df %>% ggplot(aes(y=emp, x = gender)) + geom_bar(stat='summary') +
+  geom_errorbar(stat='summary', width = 0.3) +
+  ggtitle("Average Empathy by Gender") + xlab("gender") + ylab("average empathy") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+# altruism by gender
+df %>% ggplot(aes(y=dg, x = gender)) + geom_bar(stat='summary') +
+  geom_errorbar(stat='summary', width = 0.3) +
+  ggtitle("Average Altruism by Gender") + xlab("gender") + ylab("average altruism") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+# perspective taking by gender
+df %>% ggplot(aes(y=PT_avg, x = gender)) + geom_bar(stat='summary') +
+  geom_errorbar(stat='summary', width = 0.3) +
+  ggtitle("Average Perspective Taking by Gender") + xlab("gender") + ylab("average perspective taking") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+# in or out responses split by gender
+# empathy
+df %>% ggplot(aes(y=emp, x = gender)) + geom_bar(stat='summary') +
+  geom_errorbar(stat='summary', width = 0.3) + facet_wrap(~inOrOut) +
+  ggtitle("Average Empathy for In-Group Vs. Out-Group Strangers Based on Gender") +
+  xlab("gender") + ylab("average empathy") +
+  theme(plot.title = element_text(hjust = 0.5))
+# altruism
+df %>% ggplot(aes(y=dg, x = gender)) + geom_bar(stat='summary') +
+  geom_errorbar(stat='summary', width = 0.3) + facet_wrap(~inOrOut) +
+  ggtitle("Average Altruism for In-Group Vs. Out-Group Strangers Based on Gender") + 
+  xlab("gender") + ylab("average money given to stranger (out of 25 cents)") +
+  theme(plot.title = element_text(hjust = 0.5))
+# PT
+df %>% ggplot(aes(y=PT_avg, x = gender)) + geom_bar(stat='summary') +
+  geom_errorbar(stat='summary', width = 0.3) + facet_wrap(~inOrOut) +
+  ggtitle("Average Perspective Taking for In-Group Vs. Out-Group Strangers Based on Gender") + 
+  xlab("gender") + ylab("average perspective taking") +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+Females seem to have expressed more empathy and had an easier time understanding the person they read about in comparison to males. They also tended to display more altruism, but this difference likely wasn't significant. 
+
+Females and males empathy and perspective taking remained relatively constant across in- and out-group conditions, but males may have displayed less altruism towards in-group members for some reason.
+
+## Age
+```{r age}
+# age distributions
+ggplot(df, aes(x = age)) + geom_histogram()
+ggplot(df, aes(x = age, fill = inOrOut)) + geom_histogram(position = 'identity', alpha = 0.3)
+ggplot(df, aes(x = age, fill = inOrOut)) + geom_density(alpha = 0.3)
+ggplot(df, aes(y = age, x = inOrOut)) + geom_boxplot() + 
+  ggtitle('Age of Participants Within Groups') +
+  xlab('group') +
+  theme(plot.title = element_text(hjust = 0.5))
+# do one of the groups just happen to be older?
+df %>% group_by(inOrOut) %>% summarize(n = n(), mean = mean(age, na.rm=T), sd = sd(age, na.rm=T), se = sd/sqrt(n), lower_ci = mean - 1.96*se, upper_ci = mean + 1.96*se) %>% knitr::kable()
+# relationship between age and survey responses
+ggplot(df, aes(x = age, y = emp)) + geom_point() + geom_smooth(method = 'lm') + 
+  ggtitle('Empathy\'s Relationship with Age') +
+  xlab('empathy') +
+  theme(plot.title = element_text(hjust = 0.5))
+ggplot(df, aes(x = age, y = dg)) + geom_point() + geom_smooth(method = 'lm') + 
+  ggtitle('Empathy\'s Relationship with Altruism') +
+  xlab('altruism') +
+  theme(plot.title = element_text(hjust = 0.5))
+ggplot(df, aes(x = age, y = PT_avg)) + geom_point() + geom_smooth(method = 'lm')+ 
+  ggtitle('Empathy\'s Relationship with Perspective Taking') +
+  xlab('perspective taking') +
+  theme(plot.title = element_text(hjust = 0.5))
+ggplot(df, aes(x = age, y = trait_learning_avg)) + geom_point() + geom_smooth(method = 'lm')
+ggplot(df, aes(x = age, y = trait_performance_avg)) + geom_point() + geom_smooth(method = 'lm')
+ggplot(df, aes(x = age, y = avg_sentiment)) + geom_point() + geom_smooth(method = 'lm')
+ggplot(df, aes(x = age, y = first_person_pronoun_count)) + geom_point() + geom_smooth(method = 'lm')
+ggplot(df, aes(x = age, y = second_person_pronoun_count)) + geom_point() + geom_smooth(method = 'lm')
+ggplot(df, aes(x = age, y = third_person_pronoun_count)) + geom_point() + geom_smooth(method = 'lm')
+```
+It would appear that there are more people
+
 ## Textual Analysis
 ### Sentiment Expressed
 ```{r sentiment for in v out}

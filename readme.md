@@ -86,6 +86,10 @@ Overall, there are:
 
 # Exploratory Data Analysis
 
+### Distributions of variables
+
+![](readme_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
+
 ### In-Group vs. Out-Group Empathetic Concern, Altruism, and Perspective Taking
 
 ![](readme_files/figure-gfm/empathetic%20concern-1.png)<!-- -->![](readme_files/figure-gfm/empathetic%20concern-2.png)<!-- -->
@@ -190,7 +194,7 @@ learning vs. performance priming). We explore this below.**
 
 ### Influence of Priming on Out-Group Perspective Taking, Empathetic Concern, and Altruism
 
-![](readme_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->![](readme_files/figure-gfm/unnamed-chunk-1-2.png)<!-- -->![](readme_files/figure-gfm/unnamed-chunk-1-3.png)<!-- -->
+![](readme_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->![](readme_files/figure-gfm/unnamed-chunk-2-2.png)<!-- -->![](readme_files/figure-gfm/unnamed-chunk-2-3.png)<!-- -->
 
 | inOrOut | priming_received |   n |     mean |       sd |        se | lower_ci | upper_ci |
 |:--------|:-----------------|----:|---------:|---------:|----------:|---------:|---------:|
@@ -254,7 +258,7 @@ in the in-group and out-group condition, the error bars indicate that
 the difference was only significant for participants in the in-group
 condition.
 
-![](readme_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->![](readme_files/figure-gfm/unnamed-chunk-2-2.png)<!-- -->![](readme_files/figure-gfm/unnamed-chunk-2-3.png)<!-- -->
+![](readme_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->![](readme_files/figure-gfm/unnamed-chunk-3-2.png)<!-- -->![](readme_files/figure-gfm/unnamed-chunk-3-3.png)<!-- -->
 
 | inOrOut | priming_received |   n |     mean |       sd |       se | lower_ci |  upper_ci |
 |:--------|:-----------------|----:|---------:|---------:|---------:|---------:|----------:|
@@ -293,7 +297,7 @@ performance priming.
 that there is no difference in altruism for any combination of in-group
 and out-group with learning or performance orientation.
 
-![](readme_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->![](readme_files/figure-gfm/unnamed-chunk-3-2.png)<!-- -->![](readme_files/figure-gfm/unnamed-chunk-3-3.png)<!-- -->
+![](readme_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->![](readme_files/figure-gfm/unnamed-chunk-4-2.png)<!-- -->![](readme_files/figure-gfm/unnamed-chunk-4-3.png)<!-- -->
 
 | inOrOut | priming_received |   n |     mean |        sd |        se | lower_ci | upper_ci |
 |:--------|:-----------------|----:|---------:|----------:|----------:|---------:|---------:|
@@ -367,6 +371,148 @@ can’t attribute this lack of bias to the learning priming. For the most
 part, similar empathy, altruism, and perspective taking was exhibited
 across people who received different priming and read about the same
 kind of stranger (in-group or out-group).**
+
+## Gender
+
+|        |        in |       out |
+|:-------|----------:|----------:|
+| female | 0.6153846 | 0.4915254 |
+| male   | 0.3846154 | 0.5084746 |
+
+![](readme_files/figure-gfm/gender-1.png)<!-- -->![](readme_files/figure-gfm/gender-2.png)<!-- -->![](readme_files/figure-gfm/gender-3.png)<!-- -->![](readme_files/figure-gfm/gender-4.png)<!-- -->![](readme_files/figure-gfm/gender-5.png)<!-- -->![](readme_files/figure-gfm/gender-6.png)<!-- -->
+Females seem to have expressed more empathy and had an easier time
+understanding the person they read about in comparison to males. They
+also tended to display more altruism, but this difference likely wasn’t
+significant.
+
+Females and males empathy and perspective taking remained relatively
+constant across in- and out-group conditions, but males may have
+displayed less altruism towards in-group members for some reason.
+
+## Age
+
+![](readme_files/figure-gfm/age-1.png)<!-- -->![](readme_files/figure-gfm/age-2.png)<!-- -->![](readme_files/figure-gfm/age-3.png)<!-- -->![](readme_files/figure-gfm/age-4.png)<!-- -->
+
+| inOrOut |   n |     mean |       sd |       se | lower_ci | upper_ci |
+|:--------|----:|---------:|---------:|---------:|---------:|---------:|
+| in      |  65 | 30.63077 | 12.82523 | 1.590774 | 27.51285 | 33.74869 |
+| out     |  59 | 39.00000 | 15.30157 | 1.992094 | 35.09550 | 42.90450 |
+
+![](readme_files/figure-gfm/age-5.png)<!-- -->![](readme_files/figure-gfm/age-6.png)<!-- -->![](readme_files/figure-gfm/age-7.png)<!-- -->![](readme_files/figure-gfm/age-8.png)<!-- -->![](readme_files/figure-gfm/age-9.png)<!-- -->![](readme_files/figure-gfm/age-10.png)<!-- -->![](readme_files/figure-gfm/age-11.png)<!-- -->![](readme_files/figure-gfm/age-12.png)<!-- -->![](readme_files/figure-gfm/age-13.png)<!-- -->
+It would appear that there are more people
+
+## Textual Analysis
+
+### Sentiment Expressed
+
+    ## # A tibble: 2 × 7
+    ##   inOrOut     n  mean    sd    se lower_ci upper_ci
+    ##   <chr>   <int> <dbl> <dbl> <dbl>    <dbl>    <dbl>
+    ## 1 in         65 0.359  1.43 0.177   0.0116    0.706
+    ## 2 out        59 0.265  1.43 0.187  -0.101     0.631
+
+![](readme_files/figure-gfm/sentiment%20for%20in%20v%20out-1.png)<!-- -->
+
+    ## # A tibble: 2 × 7
+    ##   priming_received     n  mean    sd    se lower_ci upper_ci
+    ##   <chr>            <int> <dbl> <dbl> <dbl>    <dbl>    <dbl>
+    ## 1 learning            63 0.115  1.53 0.192   -0.262    0.491
+    ## 2 performance         61 0.521  1.30 0.166    0.195    0.846
+
+![](readme_files/figure-gfm/sentiment%20for%20priming-1.png)<!-- -->
+
+    ## # A tibble: 4 × 8
+    ## # Groups:   inOrOut [2]
+    ##   inOrOut priming_received     n    mean    sd    se lower_ci upper_ci
+    ##   <chr>   <chr>            <int>   <dbl> <dbl> <dbl>    <dbl>    <dbl>
+    ## 1 in      learning            35  0.237   1.59 0.269  -0.290     0.764
+    ## 2 in      performance         30  0.501   1.23 0.224   0.0625    0.939
+    ## 3 out     learning            28 -0.0387  1.45 0.275  -0.578     0.500
+    ## 4 out     performance         31  0.539   1.38 0.248   0.0536    1.03
+
+![](readme_files/figure-gfm/sentiment%20by%20condition-1.png)<!-- -->
+\#### Pronoun Usage
+
+    ## # A tibble: 2 × 7
+    ##   inOrOut     n  mean    sd    se lower_ci upper_ci
+    ##   <chr>   <int> <dbl> <dbl> <dbl>    <dbl>    <dbl>
+    ## 1 in         65  2.48  3.87 0.479     1.54     3.42
+    ## 2 out        59  2.78  3.37 0.439     1.92     3.64
+
+![](readme_files/figure-gfm/pronoun%20usage%20in%20v%20out-1.png)<!-- -->
+
+    ## # A tibble: 2 × 7
+    ##   inOrOut     n  mean    sd    se lower_ci upper_ci
+    ##   <chr>   <int> <dbl> <dbl> <dbl>    <dbl>    <dbl>
+    ## 1 in         65  4.92  3.26 0.404     4.13     5.72
+    ## 2 out        59  5.71  7.35 0.956     3.84     7.59
+
+![](readme_files/figure-gfm/pronoun%20usage%20in%20v%20out-2.png)<!-- -->
+
+    ## # A tibble: 2 × 7
+    ##   inOrOut     n  mean    sd    se lower_ci upper_ci
+    ##   <chr>   <int> <dbl> <dbl> <dbl>    <dbl>    <dbl>
+    ## 1 in         65  1.66  2.80 0.347    0.982     2.34
+    ## 2 out        59  1.44  2.69 0.350    0.755     2.13
+
+![](readme_files/figure-gfm/pronoun%20usage%20in%20v%20out-3.png)<!-- -->
+
+    ## # A tibble: 2 × 7
+    ##   priming_received     n  mean    sd    se lower_ci upper_ci
+    ##   <chr>            <int> <dbl> <dbl> <dbl>    <dbl>    <dbl>
+    ## 1 learning            63  2.54  3.48 0.439     1.68     3.40
+    ## 2 performance         61  2.70  3.80 0.487     1.75     3.66
+
+![](readme_files/figure-gfm/pronoun%20usage%20priming-1.png)<!-- -->
+
+    ## # A tibble: 2 × 7
+    ##   priming_received     n  mean    sd    se lower_ci upper_ci
+    ##   <chr>            <int> <dbl> <dbl> <dbl>    <dbl>    <dbl>
+    ## 1 learning            63  5.46  3.46 0.436     4.61     6.32
+    ## 2 performance         61  5.13  7.17 0.918     3.33     6.93
+
+![](readme_files/figure-gfm/pronoun%20usage%20priming-2.png)<!-- -->
+
+    ## # A tibble: 2 × 7
+    ##   priming_received     n  mean    sd    se lower_ci upper_ci
+    ##   <chr>            <int> <dbl> <dbl> <dbl>    <dbl>    <dbl>
+    ## 1 learning            63  1.14  1.84 0.232    0.689     1.60
+    ## 2 performance         61  1.98  3.39 0.434    1.13      2.83
+
+![](readme_files/figure-gfm/pronoun%20usage%20priming-3.png)<!-- -->
+
+    ## # A tibble: 4 × 8
+    ## # Groups:   inOrOut [2]
+    ##   inOrOut priming_received     n  mean    sd    se lower_ci upper_ci
+    ##   <chr>   <chr>            <int> <dbl> <dbl> <dbl>    <dbl>    <dbl>
+    ## 1 in      learning            35  2.57  4.04 0.683     1.23     3.91
+    ## 2 in      performance         30  2.37  3.72 0.679     1.04     3.70
+    ## 3 out     learning            28  2.5   2.70 0.510     1.50     3.50
+    ## 4 out     performance         31  3.03  3.91 0.703     1.66     4.41
+
+![](readme_files/figure-gfm/pronoun%20usage%20by%20condition-1.png)<!-- -->
+
+    ## # A tibble: 4 × 8
+    ## # Groups:   inOrOut [2]
+    ##   inOrOut priming_received     n  mean    sd    se lower_ci upper_ci
+    ##   <chr>   <chr>            <int> <dbl> <dbl> <dbl>    <dbl>    <dbl>
+    ## 1 in      learning            35  5.31  3.38 0.571     4.20     6.43
+    ## 2 in      performance         30  4.47  3.12 0.569     3.35     5.58
+    ## 3 out     learning            28  5.64  3.62 0.685     4.30     6.98
+    ## 4 out     performance         31  5.77  9.62 1.73      2.39     9.16
+
+![](readme_files/figure-gfm/pronoun%20usage%20by%20condition-2.png)<!-- -->
+
+    ## # A tibble: 4 × 8
+    ## # Groups:   inOrOut [2]
+    ##   inOrOut priming_received     n  mean    sd    se lower_ci upper_ci
+    ##   <chr>   <chr>            <int> <dbl> <dbl> <dbl>    <dbl>    <dbl>
+    ## 1 in      learning            35 1.51   2.13 0.361    0.807     2.22
+    ## 2 in      performance         30 1.83   3.44 0.629    0.601     3.07
+    ## 3 out     learning            28 0.679  1.28 0.242    0.205     1.15
+    ## 4 out     performance         31 2.13   3.38 0.608    0.938     3.32
+
+![](readme_files/figure-gfm/pronoun%20usage%20by%20condition-3.png)<!-- -->
 
 # References
 
