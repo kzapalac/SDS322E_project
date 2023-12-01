@@ -10,10 +10,11 @@ Here is a brief description of all the important files above:
 - **LP_Dictator.pdf**: outline of the survey given to participants
 - **dataCleaning.Rmd**: R code used to clean the data
 - **dataCleaning.html**: Knit version of dataCleaning.Rmd, walking through the data cleaning performed
-- **dataCleaning.pdf**: Same as above put PDF form
+- **dataCleaning.pdf**: Same as above but PDF form
 - **LP_dictator_cleaned.csv**: Final dataset used to conduct EDA and modeling
 - **EDA.Rmd**: performed EDA to formulate initial hypotheses. All graphs in the final report came from this document, aside from the word cloud, which came from the dataCleaning.Rmd
-- **EDA.html**: knit version of the EDA
+- **EDA.html**: knit version of the EDA in html format
+- - **EDA.html**: knit version of the EDA in PDF format
 - **Modeling.ipynb**: python code used to perform classification tasks using logistic regression
 - **Presentation.pptx**: powerpoint presentation given to class
 - **FinalProjectReport.pdf**: final product from this project which explains the aims, data source, data cleaning, exploratory data analysis, modeling, and results
