@@ -1,7 +1,7 @@
 # SDS322E final project
 This repository contains all the elements of the final project for the class Elements of Data Science, SDS 322E. The project was a group effort by Kaylee Billstone, Paulina Brown, Jaqueline Marroquin, Christiana Ozuna, Kirsten Richards, and Kennedy Zapalac.
 
-In this project, we explored how in-group bias can be influenced by the priming people with a learning versus performance orientation.
+In this project, we explored how in-group bias can be influenced by priming people with a learning versus performance orientation.
 
 If you would like to learn more about our project, I recommend reading through our **FinalProjectReport.pdf**.
 
