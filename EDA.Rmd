@@ -2,7 +2,7 @@
 title: "Can a Learning Orientation Reduce In-Group Bias?"
 author: "Kaylee Billstone, Paulina Brown, Jaqueline Marroquin, Christian Ozuna, Kirsten Richards, and Kennedy Zapalac"
 date: "2023-10-02"
-output: html_document
+output: pdf_document
 bibliography: references.bib
 ---
 
