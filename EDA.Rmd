@@ -1,0 +1,516 @@
+---
+title: "Can a Learning Orientation Reduce In-Group Bias?"
+author: "Kaylee Billstone, Paulina Brown, Jaqueline Marroquin, Christian Ozuna, Kirsten Richards, and Kennedy Zapalac"
+date: "2023-10-02"
+output: html_document
+bibliography: references.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```
+
+# Project Overview
+
+**What is in-group bias and why does it matter?**
+
+In-group bias is the preferential treatment of people with whom you share a common identity, such as gender, race, or culture. In-group bias can be harmful when it leads to unfair outcomes, such as when a perfectly qualified job candidate is not hired because of their race. Current research is focused on reducing in-group bias to mitigate its harmful effects.[@wang2015]
+
+**Our aims:**
+
+Along this line, we are investigating if in-group bias can be influenced by priming people with a learning versus performance orientation. A learning orientation is other-focused (trying to get to know another person), whereas as performance orientation is self-focused (trying to make a good impression). Other studies have demonstrated that in-group bias is influenced by the priming received, so we expect the priming our participants received will affect their in-group bias [@bettencourt1997]. Specifically, we will:
+
+1.  Determine how perspective taking, empathetic concern, and altruism is different among in-group versus out-group members. Do our participant's display an in-group bias such that they have an easier time understanding, express more empathy for, and exhibit altruistic behavior toward in-group members?
+2.  Determine if the priming received (learning versus performance) influenced perspective taking, empathetic concern, and altruism towards out-group members.
+
+A few other aims we could pursue later:
+
+1.  How does trait-level orientation influence the effectiveness of the priming received in reducing in-group bias?
+2.  Investigate whether there are gender-related differences in the effectiveness of the learning orientation prime in reducing in-group bias.
+3.  Perform textual analysis on the participants' responses to the person going through a hard time. We could extract additional variables, which could be used to understand in-group bias. For example, can we use the sentiment expressed to predict how empathetic someone rated themselves as? Could we predict if someone had received a learning or performance orientation prime based on their language? Or does someone's trait-level orientation strongly influence their language usage?
+
+**Our dataset:**
+
+Our dataset can be accessed [here](https://github.com/kzapalac/SDS322E_project/blob/main/LP_Dictator.csv). You can also reference the survey outline [here](https://github.com/kzapalac/SDS322E_project/blob/main/LP_Dictator.pdf) to understand the dataset better.
+
+The sample includes white adults who identified as male or female, and the survey was conducted entirely online. Participants were asked to write a paragraph about themselves, and they received a learning or performance prime. Next, they read about a gender-matched in-group or out-group member (e.g., white or black stranger) going through a hard time. Then, the participants wrote a letter of support to this person, filled out a 5-item questionnaire about how easy it was to take the other person's perspective, a 1-item measure about how much empathetic concern they felt for the person, and play a one-shot dictate game. Trait-level learning and performance orientation was also assessed. There were two quality measures, which may reduce the size of the dataset, including an attention check and asking whether or not their responses should be included.
+
+Overall, there are:
+
+-   2 independent variables: in-group/out-group stranger and learning/performance orientation
+
+-   3 dependent variables: perspective taking, empathetic concern, altruism (via dictator game)
+
+-   2 potential covariates: trait level learning/performance orientation, gender
+
+# Exploratory Data Analysis
+```{r load data, include=FALSE}
+library(tidyverse)
+df <- read.csv("LP_dictator_cleaned.csv")
+```
+
+### In-Group vs. Out-Group Empathetic Concern, Altruism, and Perspective Taking
+```{r empathetic concern, echo=FALSE}
+# Christiana
+# graphs for empathy
+# df %>% filter(!is.na(inOrOut), !is.na(emp)) %>% ggplot(aes(y=emp, x = inOrOut)) + geom_violin() + ggtitle("Empathy for In-Group Vs. Out-Group Stranger") +
+#   xlab("group") + ylab('empathy')
+df %>% filter(!is.na(inOrOut), !is.na(emp)) %>% ggplot(aes(y=emp, x = inOrOut)) + geom_boxplot() + ggtitle("Empathy for In-Group Vs. Out-Group Stranger") +
+  xlab("group") + ylab('empathy')
+df %>% filter(!is.na(inOrOut), !is.na(emp)) %>% ggplot(aes(y=emp, x = inOrOut)) + geom_bar(stat='summary') +
+  geom_errorbar(stat='summary', width = 0.3) + ggtitle("Average Empathy for In-Group Vs. Out-Group Strangers") + xlab("group") + ylab("average empathy")
+
+# create summary table with mean, sd, se, and cis
+df %>% filter(!is.na(inOrOut)) %>% group_by(inOrOut) %>% summarize(n = n(), mean = mean(emp, na.rm=T), sd = sd(emp, na.rm=T), se = sd/sqrt(n), lower_ci = mean - 1.96*se, upper_ci = mean + 1.96*se) %>% knitr::kable()
+
+# test with removing attention check
+# doesn't make a difference, so you can ignore the code below
+# df %>% filter(!is.na(inOrOut), !is.na(emp), !is.na(att_check)) %>% ggplot(aes(y=emp, x = inOrOut)) + geom_violin()
+# # df %>% filter(!is.na(inOrOut), !is.na(emp), !is.na(att_check)) %>% ggplot(aes(y=emp, x = inOrOut)) + geom_boxplot()
+# df %>% filter(!is.na(inOrOut), !is.na(emp), !is.na(att_check)) %>% ggplot(aes(y=emp, x = inOrOut)) + geom_bar(stat='summary') +
+#   geom_errorbar(stat='summary', width = 0.3)
+# create summary table with mean, sd, se, and cis after removing attention check
+# df %>% filter(!is.na(inOrOut), !is.na(att_check)) %>% group_by(inOrOut) %>% summarize(n = n(), mean = mean(emp, na.rm=T), sd = sd(emp, na.rm=T), se = sd/sqrt(n), lower_ci = mean - 1.96*se, upper_ci = mean + 1.96*se)
+```
+**Description of graph:** The graphs above display participants' self-rated empathetic concern for an in-group versus out-group stranger. Participants were able to rate their empathetic concern on a scale from 1 (none) to 7 (an extreme amount). In the box plot, we can see that the median response for empathy was slightly greater for users who received an in-group response or an out-group response, but overall the empathetic concern expressed across both groups is fairly high. The in-group had a larger range of empathy levels felt than the out-group. In the bar graph, we can see that the mean level of empathy for in-group and out-group responses are almost the same. The summary table tells us that the mean empathy level for the in-group is 5.25 (+/- 0.365) and the mean empathy level for the out-group is 5.35 (+/- 0.304). Although participants exhibit very slightly more empathetic concern for out-group strangers within this sample, this difference likely isn't significant since the error bars overlap. There is a chance that the reason we do not see a difference in empathy for in and out groups is because of the way that participants were primed. We explore this more below.
+
+**Hypothesis based on graph:** Whether a participant received an in-group or out-group response had little to no impact on the level of empathy they felt for the person they read about.
+
+```{r altruism, echo=FALSE}
+# Kaylee
+# graphs for altruism (dictator game) 
+df %>% filter(!is.na(inOrOut), !is.na(dg)) %>% ggplot(aes(y=dg, x = inOrOut)) + geom_violin() + ggtitle("Distribution of Money Given to Stranger for In-Group Vs. Out-Group") + ylab("Money given to stranger (out of 25)") + xlab("group")
+# df %>% filter(!is.na(inOrOut), !is.na(dg)) %>% ggplot(aes(y=dg, x = inOrOut)) + geom_boxplot()
+df %>% filter(!is.na(inOrOut), !is.na(dg)) %>% ggplot(aes(y=dg, x = inOrOut)) + geom_bar(stat='summary') +
+   geom_errorbar(stat='summary', width = 0.3) + ggtitle('Average Money Given to In-Group Vs. Out-Group Stranger') + ylab("average money") + xlab("Group")
+# df %>% filter(!is.na(inOrOut), !is.na(dg)) %>% ggplot(aes(x=dg)) + geom_histogram() + facet_wrap(~inOrOut)
+
+# create summary table with mean, sd, se, and cis
+df %>% filter(!is.na(inOrOut), !is.na(dg)) %>% group_by(inOrOut) %>% summarize(n = n(), median = median(dg), mean = mean(dg), sd = sd(dg), se = sd/sqrt(n), lower_ci = mean - 1.96*se, upper_ci = mean + 1.96*se)  %>% knitr::kable()
+
+# test graphs again after removing attention check
+# no affect of attention check, so you can ignore the code below
+# df %>% filter(!is.na(inOrOut), !is.na(dg), !is.na(att_check)) %>% ggplot(aes(y=dg, x = inOrOut)) + geom_violin() 
+# df %>% filter(!is.na(inOrOut), !is.na(dg), !is.na(att_check)) %>% ggplot(aes(y=dg, x = inOrOut)) + geom_boxplot()
+# df %>% filter(!is.na(inOrOut), !is.na(dg), !is.na(att_check)) %>% ggplot(aes(y=dg, x = inOrOut)) + geom_bar(stat='summary') +
+#   geom_errorbar(stat='summary', width = 0.3)
+
+# create another summary table after removing people who failed the attention check
+# no difference
+# df %>% filter(!is.na(inOrOut), !is.na(dg), !is.na(att_check)) %>% group_by(inOrOut) %>% summarize(n = n(), median = median(dg), mean = mean(dg), sd = sd(dg), se = sd/sqrt(n), lower_ci = mean - 1.96*se, upper_ci = mean + 1.96*se)
+```
+**Description of graph:**  As part of an altruism test, participants were compensated with 25 cents for participating in this study, but they were able to share this money with the stranger they read about. The violin graph depicted above displays the results of this altruism test. The in-group is on the left and out-group is on the right within this plot. Regardless of whether it was an in-group or out-group stranger, most participants chose to keep the majority of the money for themselves, represented by the wider distribution at lower values. Participants in the out-group may have been a little more giving since the distribution is more spread out. To examine this difference further, we created a bar plot representing the average money given with error bars. It seems that people in the out-group condition were slightly more giving on average in this sample, but this difference may not be represented in the population since the error bars overlap.
+
+**Hypothesis based on graph:** We hypothesize that there is little to no in-group bias present in regards to the participants exhibiting altruistic behavior toward in-group members. People seem no less likely to give money to an out-group member than they do to an in-group member. In fact, they may have been slightly more likely to give to give to an out-group member than an in-group member. This is demonstrated by the wider distribution at higher values for the violin plot and the greater mean for the out-group in the bar plot. Perhaps in-group bias is being obscured in this sample because the learning prime reduced in-group bias for a portion of the sample.
+
+```{r perspective taking, echo=FALSE}
+# Kennedy
+# graphs for perspective taking
+df %>% filter(!is.na(inOrOut), !is.na(PT_avg)) %>% ggplot(aes(y=PT_avg, x = inOrOut)) + geom_violin() + 
+  ggtitle("Ease of Perspective Taking for In-Group Vs. Out-Group Stranger") + ylab("perspective taking tcores") + xlab("group") 
+df %>% filter(!is.na(inOrOut), !is.na(PT_avg)) %>% ggplot(aes(y=PT_avg, x = inOrOut)) + geom_boxplot() +
+  ggtitle("Ease of Perspective Taking for In-Group Vs. Out-Group Stranger") + ylab("perspective taking tcores") + xlab("group") 
+df %>% filter(!is.na(inOrOut), !is.na(PT_avg)) %>% ggplot(aes(y=PT_avg, x = inOrOut)) + geom_bar(stat='summary') +
+  geom_errorbar(stat='summary', width = 0.3) + ggtitle("Average of Perspective Taking Scores for In-Group Vs. Out-Group Strangers") + ylab("perspective taking score Average") + xlab("group")
+
+# create summary table with mean, sd, se, and cis
+df %>% filter(!is.na(inOrOut)) %>% group_by(inOrOut) %>% summarize(n = n(), mean = mean(PT_avg, na.rm=T), sd = sd(PT_avg, na.rm=T), se = sd/sqrt(n), lower_ci = mean - 1.96*se, upper_ci = mean + 1.96*se) %>% knitr::kable()
+
+```
+
+**Description of graph:** Participants expressed how easy it was to understand the perspective of the stranger whose paragraph they read. They answered 5 questions, and these questions were averaged to obtain each participant's average ease of perspective taking. Higher scores represent better perspective taking. In the violin plot, it looks like participants in the in-group condition had a slightly easier time take the perspective because the distribution is wider at the highest values. The boxplot displays the same thing, but we just wanted to explore the data in a few ways. Since there didn't seem to be a clear difference between the in-group and out-group conditions in the distribution plots, we created a bar plot to more easily detect a difference. In the boxplot, it does appear that participants within this sample had a slightly easier time on average understanding an in-group stranger, but this difference doesn't appear to be significant since the error bars overlap.
+
+**Hypothesis based on graph:** We hypothesize that there isn't a difference between people's understanding of in-group and out-group strangers because there isn't a clear difference in the distributions depicted in the violin plot or in the means in the bar plot. Perhaps the learning prime was successful, so it's obscuring the difference in perspective taking for in-group and out-group strangers. 
+
+**Overall, there doesn't seem to be a difference in people's empathetic concern, altruism, or perspective taking for in-group vs. out-group strangers within this sample, which is counter intuitive given the well-demonstrated existence of in-group bias. The learning prime may have been successful in reducing in-group bias, obscuring the difference unless we separate by both conditions (in-group vs. out-group and learning vs. performance priming). We explore this below.**
+
+### Difference in Responses Depending on Priming Received
+```{r}
+df %>% ggplot(aes(y=emp, x = priming_received)) + geom_bar(stat='summary') +
+  geom_errorbar(stat='summary', width = 0.3) + ggtitle("Average Empathy Dependent on Priming Received") + xlab("priming") + ylab("average empathy") +
+  theme(plot.title = element_text(hjust = 0.5))
+df %>% ggplot(aes(y=dg, x = priming_received)) + geom_bar(stat='summary') +
+  geom_errorbar(stat='summary', width = 0.3) + ggtitle("Average Money Given Dependent on Priming Received") + xlab("priming") + ylab("average money") +
+  theme(plot.title = element_text(hjust = 0.5))
+df %>% ggplot(aes(y=PT_avg, x = priming_received)) + geom_bar(stat='summary') +
+  geom_errorbar(stat='summary', width = 0.3) + ggtitle("Average Perspective Taking Dependent\n on Priming Received") + xlab("priming") + ylab("average perspective taking") +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+
+### Influence of Priming on Out-Group Perspective Taking, Empathetic Concern, and Altruism
+
+```{r}
+# Paulina
+# empathy
+# graphs for empathy
+df %>% filter(!is.na(inOrOut), !is.na(emp)) %>% ggplot(aes(y=emp, x = priming_received)) + geom_violin() + facet_wrap(~inOrOut) +
+  ggtitle("Empathy for In-Group Vs. Out-Group Stranger Based on Priming Received") + xlab("priming received") + ylab('empathy')
+df %>% filter(!is.na(inOrOut), !is.na(emp)) %>% ggplot(aes(y=emp, x = priming_received)) + geom_boxplot() + facet_wrap(~inOrOut) +
+  ggtitle("Empathy for In-Group Vs. Out-Group Stranger Based on Priming Received") + xlab("priming received") + ylab('empathy')
+df %>% filter(!is.na(inOrOut), !is.na(emp)) %>% ggplot(aes(y=emp, x = priming_received)) + geom_bar(stat='summary') +
+  geom_errorbar(stat='summary', width = 0.3) + facet_wrap(~inOrOut) +
+  ggtitle("Average Empathy for In-Group Vs. Out-Group Strangers Based on Priming Received") + xlab("priming received") + ylab("average empathy")
+
+# create summary table with mean, sd, se, and cis
+df %>% filter(!is.na(inOrOut), !is.na(emp)) %>% group_by(inOrOut, priming_received) %>% summarize(n = n(), mean = mean(emp), sd = sd(emp), se = sd/sqrt(n), lower_ci = mean - 1.96*se, upper_ci = mean + 1.96*se)  %>% knitr::kable()
+```
+**Description of graph:** We created the violin plot and the box plot to examine the distributions, but the following description focuses on the bar plot. Within the study's in-group, participants who were primed with a "learning orientation" exhibited a mean empathetic concern score of 5.69, whereas those who received the "performance orientation" priming displayed a slightly lower mean score of 4.73. In the "learning orientation" in-group, the empathetic concern scores exhibited relatively low variability, as evidenced by the narrower confidence interval (5.33 to 6.04) and a smaller standard deviation (1.08). This suggests a more consistent range of scores within this group. Conversely, the "performance orientation" in-group displayed higher variability, with a wider confidence interval (4.10 to 5.36) and a larger standard deviation (1.76). These statistics indicate greater diversity in empathetic concern scores within this group, signifying less consistency compared to the "learning orientation" group. Furthermore, the error bars do not overlap, meaning that we can safely assume a true difference exists between the empathy expressed for in-group participants depending on the priming they received.
+
+In contrast, for the out-group, individuals subjected to the "learning orientation" priming had an average empathetic concern score of 5.48, while those exposed to the "performance orientation" priming yielded a mean empathetic concern score of 5.23. In the "learning orientation" out-group, the empathetic concern scores showed moderate variability, as indicated by the confidence interval (5.10 to 5.87) and standard deviation (1.09). Meanwhile, in the "performance orientation" out-group, there was also variability, with a confidence interval (4.75 to 5.70) and a slightly higher standard deviation (1.36). This implies a range of scores with some differences within this group, reflecting a moderate level of variability. Unlike the in-group condition, the error bars do overlap in out-group graph. This indicates that the observed difference in empathetic concern dependent on the priming received is not significant. There may not be a difference in the empathetic concern expressed for out-group strangers when a different priming is received for some reason.
+
+Lastly, there doesn't seem to be a significant difference between the empathetic concern expressed by in-group or out-group participants who received the same priming. For example, the mean empathy for in-group participants who received the learning orientation was 5.69 (+/- 0.357) whereas the mean for out-group participants who received the learning orientation was 5.48 (+/- 0.397). Since the error bars overlapped, this was not a significant difference. The same is true for in-group and out-group participants who received the performance orientation because their error bars overlap.
+
+**Hypothesis based on graph:** Based on the graphs above, we hypothesize that only in-group participants (not out-group) primed with a learning orientation will express more empathetic concern than those primed with a performance orientation. Although participants who received the learning orientation trended towards expressing more empathetic concern in the in-group and out-group condition, the error bars indicate that the difference was only significant for participants in the in-group condition.
+
+```{r}
+# Kirsten
+# altruism
+df %>% filter(!is.na(inOrOut), !is.na(dg)) %>% ggplot(aes(y=dg, x = priming_received)) + geom_violin() + facet_wrap(~inOrOut) +
+  ggtitle("Altruism for In-Group Vs. Out-Group Stranger Based on Priming Received") + xlab("priming received") + ylab('money given to stranger (out of 25 cents)')
+df %>% filter(!is.na(inOrOut), !is.na(dg)) %>% ggplot(aes(y=dg, x = priming_received)) + geom_boxplot() + facet_wrap(~inOrOut) +
+  ggtitle("Altruism for In-Group Vs. Out-Group Stranger Based on Priming Received") + xlab("priming received") + ylab('money given to stranger (out of 25 cents)')
+df %>% filter(!is.na(inOrOut), !is.na(dg)) %>% ggplot(aes(y=dg, x = priming_received)) + geom_bar(stat='summary') +
+  geom_errorbar(stat='summary', width = 0.3) + facet_wrap(~inOrOut) +
+  ggtitle("Average Altruism for In-Group Vs. Out-Group Strangers Based on Priming Received") + xlab("priming received") + ylab("average money given to stranger (out of 25 cents)")
+
+# create summary table with mean, sd, se, and cis
+df %>% filter(!is.na(inOrOut), !is.na(dg)) %>% group_by(inOrOut, priming_received) %>% summarize(n = n(), mean = mean(dg), sd = sd(dg), se = sd/sqrt(n), lower_ci = mean - 1.96*se, upper_ci = mean + 1.96*se)  %>% knitr::kable()
+
+```
+
+**Description of graph:**  The violin and boxplot are visualizations of Altruism distributions found between people that were chosen for In-Groups vs Out-Groups that received either learning or performance priming. The barplot shown is the average level of Altruism found between the same testing groups. To examine the barplot further, four means of Altruism levels were observed. Those who were in the In-Group and received learning priming had a mean of 5.17 points with a standard error of 1.36. However, those in the In-Group but with performance priming were observed to have a mean Altruism score of 5.27 with a standard error of 1.41. Similarly, for the Out-group, the learning priming group received a mean Altruism score of 5.55 and standard error of 1.09. Like the In-Group, the Out-group of people who received performance priming had a higher Altruism average than those in the learning priming group with an average of 7.65 and standard error of 1.75. In the In-Group and Out-Group, each group that received performance priming had higher means than those in learning priming groups. 
+
+Due to error bar overlap for the In-Group, this is not a significant variance between learning and performance priming groups. Similarly, there is no significant difference in altruism for out-group participans who received a different priming because the error bars overlap. In fact, all of the error bars overlap, so there is
+no difference in altruism for any combination of in-group and out-group with learning or performance priming.
+
+**Hypothesis based on graph:** Based on the graphs above, we hypothesize that there is no difference in altruism for any combination of in-group and out-group with learning or performance orientation.
+
+```{r}
+# Jaqueline
+# perspective taking
+# graphs for perspective taking
+df %>% filter(!is.na(inOrOut), !is.na(PT_avg)) %>% ggplot(aes(y=PT_avg, x = priming_received)) + geom_violin() + facet_wrap(~inOrOut) +
+  ggtitle("Perspective Taking for In-Group Vs. Out-Group Stranger Based on Priming Received") + ylab("perspective taking scores") + xlab("priming received") 
+df %>% filter(!is.na(inOrOut), !is.na(PT_avg)) %>% ggplot(aes(y=PT_avg, x = priming_received)) + geom_boxplot() + facet_wrap(~inOrOut) +
+  ggtitle("Perspective Taking for In-Group Vs. Out-Group Stranger Based on Priming Received") + ylab("perspective taking tcores") + xlab("priming received") 
+df %>% filter(!is.na(inOrOut), !is.na(PT_avg)) %>% ggplot(aes(y=PT_avg, x = priming_received)) + geom_bar(stat='summary') + facet_wrap(~inOrOut) +
+  geom_errorbar(stat='summary', width = 0.3) +
+  ggtitle("Average Perspective Taking Scores for In-Group Vs. Out-Group Strangers by Priming") + ylab("perspective taking score average") + xlab("priming received")
+
+# create summary table with mean, sd, se, and cis
+df %>% filter(!is.na(inOrOut)) %>% group_by(inOrOut, priming_received) %>% summarize(n = n(), mean = mean(PT_avg, na.rm=T), sd = sd(PT_avg, na.rm=T), se = sd/sqrt(n), lower_ci = mean - 1.96*se, upper_ci = mean + 1.96*se) %>% knitr::kable()
+```
+
+**Description of graph:** In the violin plot and boxplot above, we wanted to see the distribution
+for the ease of perspective taking for people that were chosen for In-Groups compared to Out-
+groups based on the priming that each participant received. The distributions look 
+fairly similar across the in-group and out-group participants, although perhaps
+there is a bit more spread for the in-group participants. Then within in-group and
+out-group conditions, the priming received doesn't seem to have influenced perspective 
+taking very much either. Perhaps there is slightly more spread for people who received
+a performance priming both within the in-group and out-group condition, but there
+is no clear difference once again. 
+
+To better visualize the difference between each of the conditions, we plotted the
+means with error bars. Within the In-Group participants,
+those who received the learning prime had a mean of around 5.97, which was slightly higher than
+the mean of those who received the performance prime, which was around 5.77. In the Learning
+Prime In-Group, the upper confidence interval was about 6.313 and the lower confidence was
+about 5.629, with a difference of about 0.684. This means that there was slightly less variability
+in perspective taking scores for the Learning Prime In-Group, as the Performance Prime In-
+Group had a upper confidence interval of about 6.217 and the lower confidence was about 5.329,
+with a difference of about 0.888. This would also mean that more people in the Learning Prime
+In-Group chose almost the same scores than people in the Performance Prime In-Group.
+Since the error bars overlap, the difference observed between the perspective taking of
+people in the in-group across the 2 orientations was likely not significant.
+
+Within the Out-Group participants, those who received the learning prime had a mean of around
+5.79, which was slightly higher than the mean of those who received the performance prime,
+which was around 5.67. In the Learning Prime Out-Group, the upper confidence interval was
+about 6.097 and the lower confidence was about 5.489, with a difference of about 0.608. This
+means that there was also slightly less variability in perspective taking scores for the Learning
+Prime Out-Group, as the Performance Prime Out-Group had a upper confidence interval of about
+6.055 and the lower confidence was about 5.299, with a difference of about 0.756. This would
+also mean that more people in the Learning Prime Out-Group chose almost the same scores than
+people in the Performance Prime Out-Group.
+
+In the error-bar plot, the error bars for all of the groups overlap, with the Learning
+Prime In-Group and Performance Prime In-Group overlapping each other, and the Learning
+Prime Out-Group and Performance Prime Out-Group overlapping each other as well. This means
+that there is likely no significant difference in perspective taking scores between In-Groups and
+Out-Groups based on the priming that each participant received.
+
+**Hypothesis based on graph:** Based on the graphs above, we hypothesize that both in-Group
+and out-group participants do not show much of a difference in perspective taking regardless
+of their priming received, as there were little to no differences in the plots. 
+An in-group bias does not appear to exist within our sample since the plots are relatively
+the same across in-group and out-groups. However, the lack of in-group bias is likely 
+not due to the effectiveness of the learning orientation because there don't
+appear to be significant differences between the learning and performance orientation
+groups within the in-group or out-group condition.
+
+**There doesn't seem to be much in-group bias in our sample, but we can't attribute
+this lack of bias to the learning priming. For the most part, similar empathy, altruism, and
+perspective taking was exhibited across people who received different priming and
+read about the same kind of stranger (in-group or out-group).**
+
+## Additional EDA
+**From here on, we created additional graphs to explore the data and determined what we wanted to include in the final report. there are not explanations for each graph and corresponding hypotheses like above.**
+
+### Distributions of variables
+```{r}
+# Kirsten feel free to look at the distributions for all of our variables and see if there is anything interesting
+# you can also separate by groups
+ggplot(df, aes(x = pt_1)) + geom_bar()
+```
+
+### Gender
+```{r gender}
+# % of males and females in each group
+knitr::kable(prop.table(table(df$gender, df$inOrOut), margin = 2))
+
+# empathy by gender
+df %>% ggplot(aes(y=emp, x = gender)) + geom_bar(stat='summary') +
+  geom_errorbar(stat='summary', width = 0.3) +
+  ggtitle("Average Empathy by Gender") + xlab("gender") + ylab("average empathy") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+# altruism by gender
+df %>% ggplot(aes(y=dg, x = gender)) + geom_bar(stat='summary') +
+  geom_errorbar(stat='summary', width = 0.3) +
+  ggtitle("Average Money Given by Gender") + xlab("gender") + ylab("average money given") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+# perspective taking by gender
+df %>% ggplot(aes(y=PT_avg, x = gender)) + geom_bar(stat='summary') +
+  geom_errorbar(stat='summary', width = 0.3) +
+  ggtitle("Average Perspective Taking by Gender") + xlab("gender") + ylab("average perspective taking") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+# in or out responses split by gender
+# empathy
+df %>% ggplot(aes(y=emp, x = gender)) + geom_bar(stat='summary') +
+  geom_errorbar(stat='summary', width = 0.3) + facet_wrap(~inOrOut) +
+  ggtitle("Average Empathy for In-Group Vs. Out-Group Strangers Based on Gender") +
+  xlab("gender") + ylab("average empathy") +
+  theme(plot.title = element_text(hjust = 0.5))
+# altruism
+df %>% ggplot(aes(y=dg, x = gender)) + geom_bar(stat='summary') +
+  geom_errorbar(stat='summary', width = 0.3) + facet_wrap(~inOrOut) +
+  ggtitle("Average Altruism for In-Group Vs. Out-Group Strangers Based on Gender") + 
+  xlab("gender") + ylab("average money given to stranger (out of 25 cents)") +
+  theme(plot.title = element_text(hjust = 0.5))
+# PT
+df %>% ggplot(aes(y=PT_avg, x = gender)) + geom_bar(stat='summary') +
+  geom_errorbar(stat='summary', width = 0.3) + facet_wrap(~inOrOut) +
+  ggtitle("Average Perspective Taking for In-Group Vs. Out-Group Strangers Based on Gender") + 
+  xlab("gender") + ylab("average perspective taking") +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+Females seem to have expressed more empathy and had an easier time understanding the person they read about in comparison to males. They also tended to display more altruism, but this difference likely wasn't significant. 
+
+Females and males empathy and perspective taking remained relatively constant across in- and out-group conditions, but males may have displayed less altruism towards in-group members for some reason.
+
+## Age
+```{r age}
+# age distributions
+ggplot(df, aes(x = age)) + geom_histogram()
+ggplot(df, aes(x = age, fill = inOrOut)) + geom_histogram(position = 'identity', alpha = 0.3)
+ggplot(df, aes(x = age, fill = inOrOut)) + geom_density(alpha = 0.3)
+ggplot(df, aes(y = age, x = inOrOut)) + geom_boxplot() + 
+  ggtitle('Age of Participants Within Groups') +
+  xlab('group') +
+  theme(plot.title = element_text(hjust = 0.5))
+# do one of the groups just happen to be older?
+df %>% group_by(inOrOut) %>% summarize(n = n(), mean = mean(age, na.rm=T), sd = sd(age, na.rm=T), se = sd/sqrt(n), lower_ci = mean - 1.96*se, upper_ci = mean + 1.96*se) %>% knitr::kable()
+# relationship between age and survey responses
+ggplot(df, aes(x = age, y = emp)) + geom_point() + geom_smooth(method = 'lm') + 
+  ggtitle('Empathy\'s Relationship with Age') +
+  ylab('empathy') +
+  theme(plot.title = element_text(hjust = 0.5))
+ggplot(df, aes(x = age, y = dg)) + geom_point() + geom_smooth(method = 'lm') + 
+  ggtitle('Altruism\'s Relationship with Age') +
+  ylab('altruism') +
+  theme(plot.title = element_text(hjust = 0.5))
+ggplot(df, aes(x = age, y = PT_avg)) + geom_point() + geom_smooth(method = 'lm')+ 
+  ggtitle('Perspective Taking\'s Relationship with Age') +
+  ylab('perspective taking') +
+  theme(plot.title = element_text(hjust = 0.5))
+ggplot(df, aes(x = age, y = trait_learning_avg)) + geom_point() + geom_smooth(method = 'lm')
+ggplot(df, aes(x = age, y = trait_performance_avg)) + geom_point() + geom_smooth(method = 'lm')
+ggplot(df, aes(x = age, y = avg_sentiment)) + geom_point() + geom_smooth(method = 'lm')
+ggplot(df, aes(x = age, y = first_person_pronoun_count)) + geom_point() + geom_smooth(method = 'lm')
+ggplot(df, aes(x = age, y = second_person_pronoun_count)) + geom_point() + geom_smooth(method = 'lm')
+ggplot(df, aes(x = age, y = third_person_pronoun_count)) + geom_point() + geom_smooth(method = 'lm')
+```
+It would appear that the out-group is slightly older just by chance. Age doesn't appear to have much of a relationship with any of our variables. 
+
+### Textual Analysis
+#### Sentiment Expressed
+```{r sentiment for in v out}
+# comparing average sentiment scores for in group vs out group
+# summary table
+df %>% group_by(inOrOut) %>% summarize(n = n(), mean = mean(avg_sentiment), sd = sd(avg_sentiment), se = sd/sqrt(n), lower_ci = mean - 1.96*se, upper_ci = mean + 1.96*se)
+# graphing
+df %>% ggplot(aes(y=avg_sentiment, x = inOrOut)) + geom_bar(stat='summary') + 
+  geom_errorbar(stat='summary', width = 0.3) + labs(x = "In or Out", y = "Sentiment") +
+  ggtitle('Average Sentiment Expressed for In Vs. Out-group') +
+  theme(plot.title = element_text(hjust = 0.5))
+  
+```
+
+```{r sentiment for priming}
+# comparing average sentiment scores for learning vs performance priming
+# summary table
+df %>% group_by(priming_received) %>% summarize(n = n(), mean = mean(avg_sentiment), sd = sd(avg_sentiment), se = sd/sqrt(n), lower_ci = mean - 1.96*se, upper_ci = mean + 1.96*se)
+# graphing
+df %>% ggplot(aes(y=avg_sentiment, x = priming_received)) + geom_bar(stat='summary') + 
+  geom_errorbar(stat='summary', width = 0.3) + labs(x = "In or Out", y = "Sentiment") +
+  ggtitle('Average Sentiment Expressed by Priming Received') +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+```{r sentiment by condition}
+# comparing average sentiment scores for in group vs out group
+# summary table
+df %>% group_by(inOrOut, priming_received) %>% summarize(n = n(), mean = mean(avg_sentiment), sd = sd(avg_sentiment), se = sd/sqrt(n), lower_ci = mean - 1.96*se, upper_ci = mean + 1.96*se)
+# graphing
+df %>% ggplot(aes(y=avg_sentiment, x = priming_received)) + geom_bar(stat='summary') + 
+  geom_errorbar(stat='summary', width = 0.3) + facet_wrap(~inOrOut) +
+  labs(x = "In or Out", y = "Sentiment") +
+  ggtitle('Average Sentiment Expressed by Condition') +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+```{r sentiment for gender}
+# comparing average sentiment scores for learning vs performance priming
+# summary table
+df %>% group_by(gender) %>% summarize(n = n(), mean = mean(avg_sentiment), sd = sd(avg_sentiment), se = sd/sqrt(n), lower_ci = mean - 1.96*se, upper_ci = mean + 1.96*se)
+# graphing
+df %>% ggplot(aes(y=avg_sentiment, x = gender)) + geom_bar(stat='summary') + 
+  geom_errorbar(stat='summary', width = 0.3) + labs(x = "Gender", y = "Sentiment") +
+  ggtitle('Average Sentiment Expressed by Gender') +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+#### Pronoun Usage
+```{r pronoun usage in v out}
+# comparing first person pronoun usage for in group vs out group
+# summary table
+df %>% group_by(inOrOut) %>% summarize(n = n(), mean = mean(first_person_pronoun_count), sd = sd(first_person_pronoun_count), se = sd/sqrt(n), lower_ci = mean - 1.96*se, upper_ci = mean + 1.96*se)
+# graphing
+df %>% ggplot(aes(y=first_person_pronoun_count, x = inOrOut)) + geom_bar(stat='summary') + 
+  geom_errorbar(stat='summary', width = 0.3) + labs(x = "In or Out", y = "Average First Person Pronoun Usage") +
+  ggtitle('Average First Person Pronoun Usage\n for In Vs. Out-group') +
+  theme(plot.title = element_text(hjust = 0.5))
+
+# comparing second person pronoun usage for in group vs out group
+# summary table
+df %>% group_by(inOrOut) %>% summarize(n = n(), mean = mean(second_person_pronoun_count), sd = sd(second_person_pronoun_count), se = sd/sqrt(n), lower_ci = mean - 1.96*se, upper_ci = mean + 1.96*se)
+# graphing
+df %>% ggplot(aes(y=second_person_pronoun_count, x = inOrOut)) + geom_bar(stat='summary') + 
+  geom_errorbar(stat='summary', width = 0.3) + labs(x = "In or Out", y = "Average Second Person Pronoun Usage") +
+  ggtitle('Average Second Person Pronoun Usage\n for In Vs. Out-group') +
+  theme(plot.title = element_text(hjust = 0.5))
+
+# comparing third person pronoun usage for in group vs out group
+# summary table
+df %>% group_by(inOrOut) %>% summarize(n = n(), mean = mean(third_person_pronoun_count), sd = sd(third_person_pronoun_count), se = sd/sqrt(n), lower_ci = mean - 1.96*se, upper_ci = mean + 1.96*se)
+# graphing
+df %>% ggplot(aes(y=third_person_pronoun_count, x = inOrOut)) + geom_bar(stat='summary') + 
+  geom_errorbar(stat='summary', width = 0.3) + labs(x = "In or Out", y = "Average Third Person Pronoun Usage") +
+  ggtitle('Average Third Person Pronoun Usage\n for In Vs. Out-group') +
+  theme(plot.title = element_text(hjust = 0.5))
+
+```
+
+```{r pronoun usage priming}
+# comparing first person pronoun usage for in group vs out group
+# summary table
+df %>% group_by(priming_received) %>% summarize(n = n(), mean = mean(first_person_pronoun_count), sd = sd(first_person_pronoun_count), se = sd/sqrt(n), lower_ci = mean - 1.96*se, upper_ci = mean + 1.96*se)
+# graphing
+df %>% ggplot(aes(y=first_person_pronoun_count, x = priming_received)) + geom_bar(stat='summary') + 
+  geom_errorbar(stat='summary', width = 0.3) + labs(x = "Priming Received", y = "Average First Person Pronoun Usage") +
+  ggtitle('Average First Person Pronoun Usage\n by Priming Received') +
+  theme(plot.title = element_text(hjust = 0.5))
+
+# comparing second person pronoun usage for in group vs out group
+# summary table
+df %>% group_by(priming_received) %>% summarize(n = n(), mean = mean(second_person_pronoun_count), sd = sd(second_person_pronoun_count), se = sd/sqrt(n), lower_ci = mean - 1.96*se, upper_ci = mean + 1.96*se)
+# graphing
+df %>% ggplot(aes(y=second_person_pronoun_count, x = priming_received)) + geom_bar(stat='summary') + 
+  geom_errorbar(stat='summary', width = 0.3) + labs(x = "Priming Received", y = "Average Second Person Pronoun Usage") +
+  ggtitle('Average Second Person Pronoun Usage\n by Priming Received') +
+  theme(plot.title = element_text(hjust = 0.5))
+
+# comparing third person pronoun usage for in group vs out group
+# summary table
+df %>% group_by(priming_received) %>% summarize(n = n(), mean = mean(third_person_pronoun_count), sd = sd(third_person_pronoun_count), se = sd/sqrt(n), lower_ci = mean - 1.96*se, upper_ci = mean + 1.96*se)
+# graphing
+df %>% ggplot(aes(y=third_person_pronoun_count, x = priming_received)) + geom_bar(stat='summary') + 
+  geom_errorbar(stat='summary', width = 0.3) + labs(x = "Priming Received", y = "Average Third Person Pronoun Usage") +
+  ggtitle('Average Third Person Pronoun Usage\n by Priming Received') +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+```{r pronoun usage by condition}
+# comparing first person pronoun usage for in group vs out group
+# summary table
+df %>% group_by(inOrOut, priming_received) %>% summarize(n = n(), mean = mean(first_person_pronoun_count), sd = sd(first_person_pronoun_count), se = sd/sqrt(n), lower_ci = mean - 1.96*se, upper_ci = mean + 1.96*se)
+# graphing
+df %>% ggplot(aes(y=first_person_pronoun_count, x = priming_received)) + geom_bar(stat='summary') + 
+  geom_errorbar(stat='summary', width = 0.3) + facet_wrap(~inOrOut) +
+  labs(x = "Priming Received", y = "Average First Person Pronoun Usage") +
+  ggtitle('Average First Person Pronoun Usage by Priming Received') +
+  theme(plot.title = element_text(hjust = 0.5))
+
+# comparing second person pronoun usage for in group vs out group
+# summary table
+df %>% group_by(inOrOut, priming_received) %>% summarize(n = n(), mean = mean(second_person_pronoun_count), sd = sd(second_person_pronoun_count), se = sd/sqrt(n), lower_ci = mean - 1.96*se, upper_ci = mean + 1.96*se)
+# graphing
+df %>% ggplot(aes(y=second_person_pronoun_count, x = priming_received)) + geom_bar(stat='summary') + 
+  geom_errorbar(stat='summary', width = 0.3) + facet_wrap(~inOrOut) +
+  labs(x = "Priming Received", y = "Average Second Person Pronoun Usage") +
+  ggtitle('Average Second Person Pronoun Usage by Priming Received') +
+  theme(plot.title = element_text(hjust = 0.5))
+
+# comparing third person pronoun usage for in group vs out group
+# summary table
+df %>% group_by(inOrOut, priming_received) %>% summarize(n = n(), mean = mean(third_person_pronoun_count), sd = sd(third_person_pronoun_count), se = sd/sqrt(n), lower_ci = mean - 1.96*se, upper_ci = mean + 1.96*se)
+# graphing
+df %>% ggplot(aes(y=third_person_pronoun_count, x = priming_received)) + geom_bar(stat='summary') + 
+  geom_errorbar(stat='summary', width = 0.3) + facet_wrap(~inOrOut) +
+  labs(x = "Priming Received", y = "Average Third Person Pronoun Usage") +
+  ggtitle('Average Third Person Pronoun Usage by Priming Received') +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+```{r pronoun usage gender}
+# comparing first person pronoun usage for in group vs out group
+# summary table
+df %>% group_by(gender) %>% summarize(n = n(), mean = mean(first_person_pronoun_count), sd = sd(first_person_pronoun_count), se = sd/sqrt(n), lower_ci = mean - 1.96*se, upper_ci = mean + 1.96*se)
+# graphing
+df %>% ggplot(aes(y=first_person_pronoun_count, x = gender)) + geom_bar(stat='summary') + 
+  geom_errorbar(stat='summary', width = 0.3) + labs(x = "Gender", y = "Average First Person Pronoun Usage") +
+  ggtitle('Average First Person Pronoun Usage\n by Gender') +
+  theme(plot.title = element_text(hjust = 0.5))
+
+# comparing second person pronoun usage for in group vs out group
+# summary table
+df %>% group_by(gender) %>% summarize(n = n(), mean = mean(second_person_pronoun_count), sd = sd(second_person_pronoun_count), se = sd/sqrt(n), lower_ci = mean - 1.96*se, upper_ci = mean + 1.96*se)
+# graphing
+df %>% ggplot(aes(y=second_person_pronoun_count, x = gender)) + geom_bar(stat='summary') + 
+  geom_errorbar(stat='summary', width = 0.3) + labs(x = "Gender", y = "Average Second Person Pronoun Usage") +
+  ggtitle('Average Second Person Pronoun Usage\n by Gender') +
+  theme(plot.title = element_text(hjust = 0.5))
+
+# comparing third person pronoun usage for in group vs out group
+# summary table
+df %>% group_by(gender) %>% summarize(n = n(), mean = mean(third_person_pronoun_count), sd = sd(third_person_pronoun_count), se = sd/sqrt(n), lower_ci = mean - 1.96*se, upper_ci = mean + 1.96*se)
+# graphing
+df %>% ggplot(aes(y=third_person_pronoun_count, x = gender)) + geom_bar(stat='summary') + 
+  geom_errorbar(stat='summary', width = 0.3) + labs(x = "Gender", y = "Average Third Person Pronoun Usage") +
+  ggtitle('Average Third Person Pronoun Usage\n by Gender') +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+# References
